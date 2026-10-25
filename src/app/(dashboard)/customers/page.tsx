@@ -3,20 +3,22 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { fetchCustomers } from '@/store/slices/customersSlice';
+import { fetchCustomers } from '@/lib/store/slices/customersSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
 import { usePermissions } from '@/hooks/usePermissions';
-import { useIsWide } from '@/lib/useMedia';
-import { PageBody, PageHeader } from '@/components/layout/PageHeader';
-import { SplitItem, SplitView } from '@/components/layout/SplitView';
+import { useIsWide } from '@/hooks/useMedia';
+import { PageBody, PageHeader } from '@/components/common/PageHeader';
+import { SplitItem, SplitView } from '@/components/common/SplitView';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Field';
 import { Badge, EmptyState } from '@/components/ui/Display';
 import { LoadingBlock } from '@/components/ui/Spinner';
-import { CreditCardIcon, PeopleIcon, PlusIcon, SearchIcon } from '@/components/icons/LineIcons';
-import { CustomerForm } from '@/features/customers/CustomerForm';
-import { CustomerDetailContent } from '@/features/customers/CustomerDetailContent';
+import { PeopleIcon } from '@/components/ui/icons/NavIcons';
+import { SearchIcon, PlusIcon } from '@/components/ui/icons/ActionIcons';
+import { CreditCardIcon } from '@/components/ui/icons/DataIcons';
+import { CustomerForm } from '@/features/customers/components/CustomerForm';
+import { CustomerDetailContent } from '@/features/customers/components/CustomerDetailContent';
 
 export default function CustomersPage() {
   const router = useRouter();

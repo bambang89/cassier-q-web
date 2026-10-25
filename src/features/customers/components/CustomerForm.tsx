@@ -4,11 +4,11 @@ import { useState } from 'react';
 
 import type { Customer } from '@/types/models';
 import { Alert } from '@/lib/alert';
-import { useAppDispatch } from '@/store/hooks';
-import { createCustomer, recordCustomerPayment, updateCustomer } from '@/store/slices/customersSlice';
+import { createCustomer, recordCustomerPayment, updateCustomer } from '@/lib/store/slices/customersSlice';
+import { useAppDispatch } from '@/hooks/store';
 import { Button } from '@/components/ui/Button';
 import { FormControl, Input } from '@/components/ui/Field';
-import { CreditCardIcon } from '@/components/icons/LineIcons';
+import { CreditCardIcon } from '@/components/ui/icons/DataIcons';
 
 function Actions({ onCancel, submitting, disabled }: { onCancel: () => void; submitting: boolean; disabled: boolean }) {
   return (

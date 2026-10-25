@@ -2,16 +2,17 @@
 
 import { useEffect, useState } from 'react';
 
+import { fetchCustomerLedger, fetchCustomers } from '@/lib/store/slices/customersSlice';
 import { usePermissions } from '@/hooks/usePermissions';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { fetchCustomerLedger, fetchCustomers } from '@/store/slices/customersSlice';
-import { cn } from '@/lib/cn';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
+import { cn } from '@/utils/cn';
 import { Modal } from '@/components/ui/Modal';
 import { Badge } from '@/components/ui/Display';
 import { Button } from '@/components/ui/Button';
 import { LoadingBlock } from '@/components/ui/Spinner';
-import { CreditCardIcon, HistoryIcon, PinIcon, ReceiptIcon } from '@/components/icons/LineIcons';
-import { CustomerForm, RecordPaymentForm } from './CustomerForm';
+import { ReceiptIcon } from '@/components/ui/icons/NavIcons';
+import { CreditCardIcon, PinIcon, HistoryIcon } from '@/components/ui/icons/DataIcons';
+import { CustomerForm, RecordPaymentForm } from '@/features/customers/components/CustomerForm';
 
 const ENTRY_VARIANT: Record<string, 'error' | 'success' | 'neutral'> = { DEBT: 'error', PAYMENT: 'success', VOID: 'neutral' };
 const ENTRY_LABEL: Record<string, string> = { DEBT: 'Utang', PAYMENT: 'Pembayaran', VOID: 'Dibatalkan' };

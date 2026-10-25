@@ -2,9 +2,9 @@
 
 import { useParams } from 'next/navigation';
 
-import { useAppSelector } from '@/store/hooks';
-import { PageBody, PageHeader } from '@/components/layout/PageHeader';
-import { CustomerDetailContent } from '@/features/customers/CustomerDetailContent';
+import { useAppSelector } from '@/hooks/store';
+import { PageBody, PageHeader } from '@/components/common/PageHeader';
+import { CustomerDetailContent } from '@/features/customers/components/CustomerDetailContent';
 
 export default function CustomerDetailPage() {
   const { customerId } = useParams<{ customerId: string }>();
