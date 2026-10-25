@@ -3,9 +3,9 @@
 import { useState } from 'react';
 
 import { Alert } from '@/lib/alert';
-import { useAppDispatch } from '@/store/hooks';
-import { closeSession } from '@/store/slices/cashierSessionSlice';
-import { changePassword } from '@/store/slices/authSlice';
+import { closeSession } from '@/lib/store/slices/cashierSessionSlice';
+import { changePassword } from '@/lib/store/slices/authSlice';
+import { useAppDispatch } from '@/hooks/store';
 import { Button } from '@/components/ui/Button';
 import { FormControl, Input, PasswordInput } from '@/components/ui/Field';
 

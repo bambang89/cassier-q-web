@@ -2,17 +2,18 @@
 
 import { useState } from 'react';
 
-import * as authApi from '@/api/authApi';
-import * as storeApi from '@/api/storeApi';
-import { apiErrorMessage } from '@/api/errors';
+import * as authApi from '@/services/authApi';
+import * as storeApi from '@/services/storeApi';
 import { Alert } from '@/lib/alert';
-import { photoProblem, pickPhoto } from '@/lib/pickPhoto';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { userUpdated } from '@/store/slices/authSlice';
-import { storeProfileUpdated } from '@/store/slices/storeProfileSlice';
-import { initialsOf } from '@/navigation/menu';
+import { userUpdated } from '@/lib/store/slices/authSlice';
+import { storeProfileUpdated } from '@/lib/store/slices/storeProfileSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
+import { apiErrorMessage } from '@/utils/apiErrors';
+import { photoProblem, pickPhoto } from '@/utils/pickPhoto';
+import { initialsOf } from '@/utils/text';
 import { Spinner } from '@/components/ui/Spinner';
-import { PencilIcon, StoreIcon } from '@/components/icons/LineIcons';
+import { StoreIcon } from '@/components/ui/icons/NavIcons';
+import { PencilIcon } from '@/components/ui/icons/ActionIcons';
 
 /** Kartu profil navy: foto profil & foto toko (bisa diganti Kepala Toko), nama, role. */
 export function AccountHero() {

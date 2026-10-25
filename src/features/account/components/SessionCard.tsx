@@ -1,15 +1,9 @@
 'use client';
 
 import type { CashierSession } from '@/types/models';
-import { cn } from '@/lib/cn';
+import { cn } from '@/utils/cn';
+import { durationSince } from '@/utils/date';
 import { Button } from '@/components/ui/Button';
-
-/** "2 jam 15 mnt" sejak waktu tertentu. */
-function durationSince(iso: string): string {
-  const minutes = Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 60000));
-  const hours = Math.floor(minutes / 60);
-  return hours > 0 ? `${hours} jam ${minutes % 60} mnt` : `${minutes} mnt`;
-}
 
 export function SessionCard({ session, onClose }: { session: CashierSession | null; onClose: () => void }) {
   return (

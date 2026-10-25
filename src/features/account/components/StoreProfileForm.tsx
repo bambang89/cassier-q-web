@@ -3,13 +3,13 @@
 import { useEffect, useState } from 'react';
 
 import { Alert } from '@/lib/alert';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { fetchStoreProfile, updateStoreProfile } from '@/store/slices/storeProfileSlice';
+import { fetchStoreProfile, updateStoreProfile } from '@/lib/store/slices/storeProfileSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
 import { Badge } from '@/components/ui/Display';
 import { Button } from '@/components/ui/Button';
 import { FormControl, Input } from '@/components/ui/Field';
 import { LoadingBlock } from '@/components/ui/Spinner';
-import { StoreIcon } from '@/components/icons/LineIcons';
+import { StoreIcon } from '@/components/ui/icons/NavIcons';
 
 /** Form profil toko (Outlet) — dipakai halaman Outlet. */
 export function StoreProfileForm() {
