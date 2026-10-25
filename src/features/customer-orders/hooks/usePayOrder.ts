@@ -3,12 +3,12 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import * as productsApi from '@/api/productsApi';
 import type { CartItem } from '@/types/models';
 import type { CustomerOrder } from '@/types/storefront';
+import * as productsApi from '@/services/productsApi';
 import { Alert } from '@/lib/alert';
-import { useAppDispatch } from '@/store/hooks';
-import { loadOrderIntoCart } from '@/store/slices/cartSlice';
+import { loadOrderIntoCart } from '@/lib/store/slices/cartSlice';
+import { useAppDispatch } from '@/hooks/store';
 
 /** "Bayar di Kasir": isi keranjang Kasir dengan item pesanan, lalu buka Kasir. */
 export function usePayOrder() {

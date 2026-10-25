@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { fetchOrderCounts } from '@/api/customerOrdersApi';
+import { fetchOrderCounts } from '@/services/customerOrdersApi';
 
 /** Jumlah pesanan berstatus Baru, diperbarui tiap 30 detik (badge menu Pesanan). */
 export function useNewOrderCount(enabled: boolean) {

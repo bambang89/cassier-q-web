@@ -1,10 +1,10 @@
 'use client';
 
-import { markOrderPaid } from '@/api/customerOrdersApi';
-import { apiErrorMessage } from '@/api/errors';
 import type { Order } from '@/types/models';
+import { markOrderPaid } from '@/services/customerOrdersApi';
 import { Alert } from '@/lib/alert';
-import { useAppSelector } from '@/store/hooks';
+import { useAppSelector } from '@/hooks/store';
+import { apiErrorMessage } from '@/utils/apiErrors';
 
 /**
  * Setelah checkout Kasir: kalau keranjang berasal dari menu Pesanan, tandai

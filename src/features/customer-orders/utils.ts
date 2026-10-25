@@ -1,5 +1,5 @@
 import type { CustomerOrder, CustomerOrderStatus, Fulfillment } from '@/types/storefront';
-import type { BadgeVariant } from '@/components/ui/Display';
+import type { BadgeVariant } from '@/types/ui';
 
 export const STATUS_META: Record<CustomerOrderStatus, { label: string; variant: BadgeVariant }> = {
   NEW: { label: 'Baru', variant: 'error' },
@@ -31,18 +31,23 @@ export function nextAction(status: CustomerOrderStatus): { label: string; status
   }
 }
 
-export const rupiah = (value: number) => `Rp ${Math.round(value).toLocaleString('id-ID')}`;
-
-/** "baru saja", "5 mnt lalu", "2 jam lalu", atau tanggal. */
-export function timeAgo(iso: string): string {
-  const minutes = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
-  if (minutes < 1) return 'baru saja';
-  if (minutes < 60) return `${minutes} mnt lalu`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours} jam lalu`;
-  return new Date(iso).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-}
-
 export function itemSummary(order: CustomerOrder): string {
   return order.items.map((i) => `${Number(i.quantity)}× ${i.productName}`).join(', ');
+}
+
+/** Bunyi "ding" singkat saat ada pesanan baru (tanpa file audio). */
+export function ding() {
+  try {
+    const ctx = new AudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.frequency.value = 880;
+    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.6);
+  } catch {
+    // browser memblokir audio sebelum ada interaksi — abaikan
+  }
 }

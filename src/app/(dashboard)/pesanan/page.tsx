@@ -2,21 +2,22 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { changeOrderStatus, fetchCustomerOrders } from '@/api/customerOrdersApi';
-import { apiErrorMessage } from '@/api/errors';
 import type { CustomerOrder, CustomerOrderStatus } from '@/types/storefront';
+import { changeOrderStatus, fetchCustomerOrders } from '@/services/customerOrdersApi';
 import { Alert } from '@/lib/alert';
-import { cn } from '@/lib/cn';
-import { useIsWide } from '@/lib/useMedia';
+import { useIsWide } from '@/hooks/useMedia';
 import { usePermissions } from '@/hooks/usePermissions';
-import { PageBody, PageHeader } from '@/components/layout/PageHeader';
+import { apiErrorMessage } from '@/utils/apiErrors';
+import { cn } from '@/utils/cn';
+import { PageBody, PageHeader } from '@/components/common/PageHeader';
 import { Modal } from '@/components/ui/Modal';
-import { Button } from '@/components/ui/Button';
-import { Badge, EmptyState } from '@/components/ui/Display';
+import { EmptyState } from '@/components/ui/Display';
 import { LoadingBlock } from '@/components/ui/Spinner';
-import { ClipboardIcon, ClockIcon, PeopleIcon, PinIcon } from '@/components/icons/LineIcons';
-import { FULFILLMENT_LABEL, STATUS_META, itemSummary, nextAction, rupiah, timeAgo } from '@/features/customer-orders/orderMeta';
-import { usePayOrder } from '@/features/customer-orders/usePayOrder';
+import { ClipboardIcon } from '@/components/ui/icons/NavIcons';
+import { ding } from '@/features/customer-orders/utils';
+import { usePayOrder } from '@/features/customer-orders/hooks/usePayOrder';
+import { OrderCard } from '@/features/customer-orders/components/OrderCard';
+import { OrderDetail } from '@/features/customer-orders/components/OrderDetail';
 
 const POLL_MS = 15000;
 
@@ -25,23 +26,6 @@ const COLUMNS: { key: string; title: string; statuses: CustomerOrderStatus[]; ac
   { key: 'progress', title: 'Diproses', statuses: ['ACCEPTED', 'IN_PROGRESS'], accent: 'bg-warning-500' },
   { key: 'ready', title: 'Siap Diambil / Diantar', statuses: ['READY'], accent: 'bg-success-500' },
 ];
-
-/** Bunyi "ding" singkat saat ada pesanan baru (tanpa file audio). */
-function ding() {
-  try {
-    const ctx = new AudioContext();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.frequency.value = 880;
-    gain.gain.setValueAtTime(0.15, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
-    osc.connect(gain).connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.6);
-  } catch {
-    // browser memblokir audio sebelum ada interaksi — abaikan
-  }
-}
 
 /** Menu Pesanan: antrian pesanan masuk dari toko online. */
 export default function PesananPage() {
@@ -205,153 +189,3 @@ export default function PesananPage() {
   );
 }
 
-function OrderCard({
-  order,
-  canProcess,
-  busy,
-  paying,
-  onOpen,
-  onAdvance,
-  onPay,
-}: {
-  order: CustomerOrder;
-  canProcess: boolean;
-  busy: boolean;
-  paying: boolean;
-  onOpen: () => void;
-  onAdvance: (status: CustomerOrderStatus) => void;
-  onPay: () => void;
-}) {
-  const meta = STATUS_META[order.status];
-  const next = nextAction(order.status);
-  const isNew = order.status === 'NEW';
-  return (
-    <div
-      onClick={onOpen}
-      className={cn(
-        'cursor-pointer animate-fade-in rounded-xl border bg-white p-4 shadow-card transition hover:shadow-md',
-        isNew ? 'border-error-200 ring-2 ring-error-100' : 'border-line',
-      )}
-    >
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0">
-          <p className="truncate font-bold text-ink">{order.customerName}</p>
-          <p className="text-[12.5px] text-ink-3">
-            {order.orderNumber} · {timeAgo(order.createdAt)}
-          </p>
-        </div>
-        <Badge variant={meta.variant}>{meta.label}</Badge>
-      </div>
-      <p className="mt-2 line-clamp-2 text-sm text-ink-2">{itemSummary(order)}</p>
-      <div className="mt-3 flex flex-wrap items-center gap-2 text-[12px] font-semibold">
-        <span className="rounded-full bg-gray-100 px-2 py-0.5 text-ink-2">{FULFILLMENT_LABEL[order.fulfillment]}</span>
-        {order.tableLabel ? <span className="rounded-full bg-primary-50 px-2 py-0.5 text-primary-700">Meja {order.tableLabel}</span> : null}
-        <span className="ml-auto text-sm font-bold text-ink">{rupiah(order.subtotal)}</span>
-      </div>
-      {['NEW', 'ACCEPTED', 'IN_PROGRESS', 'READY'].includes(order.status) ? (
-        <div className="mt-3 flex gap-2" onClick={(e) => e.stopPropagation()}>
-          {next && canProcess ? (
-            <Button size="sm" variant={isNew ? 'solid' : 'secondary'} className="flex-1" loading={busy} onClick={() => onAdvance(next.status)}>
-              {next.label}
-            </Button>
-          ) : null}
-          <Button size="sm" variant={order.status === 'READY' ? 'success' : 'outline'} className="flex-1" loading={paying} onClick={onPay}>
-            Bayar di Kasir
-          </Button>
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-function OrderDetail({
-  order,
-  canProcess,
-  busy,
-  paying,
-  onAdvance,
-  onCancel,
-  onPay,
-}: {
-  order: CustomerOrder;
-  canProcess: boolean;
-  busy: boolean;
-  paying: boolean;
-  onAdvance: (status: CustomerOrderStatus) => void;
-  onCancel: () => void;
-  onPay: () => void;
-}) {
-  const meta = STATUS_META[order.status];
-  const next = nextAction(order.status);
-  const active = ['NEW', 'ACCEPTED', 'IN_PROGRESS', 'READY'].includes(order.status);
-  const wa = order.customerPhone?.replace(/\D/g, '').replace(/^0/, '62');
-  return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <Badge variant={meta.variant}>{meta.label}</Badge>
-        <span className="text-[12.5px] text-ink-3">
-          {order.source === 'ONLINE' ? 'Toko online' : 'Kasir'} · {new Date(order.createdAt).toLocaleString('id-ID')}
-        </span>
-      </div>
-      <div className="space-y-1.5 rounded-xl bg-gray-50 p-4 text-sm">
-        <p className="flex items-center gap-2 font-semibold text-ink">
-          <PeopleIcon size={15} /> {order.customerName}
-          {order.customerPhone ? <span className="font-normal text-ink-3">· {order.customerPhone}</span> : null}
-        </p>
-        <p className="flex items-center gap-2 text-ink-2">
-          <ClockIcon size={15} /> {FULFILLMENT_LABEL[order.fulfillment]}
-          {order.tableLabel ? ` · Meja ${order.tableLabel}` : ''}
-        </p>
-        {order.deliveryAddress ? (
-          <p className="flex items-start gap-2 text-ink-2">
-            <PinIcon size={15} className="mt-0.5 shrink-0" /> {order.deliveryAddress}
-          </p>
-        ) : null}
-        {order.notes ? <p className="text-ink-2 italic">“{order.notes}”</p> : null}
-      </div>
-      <div>
-        {order.items.map((item) => (
-          <div key={item.id} className="flex justify-between gap-3 border-b border-gray-100 py-2 text-sm last:border-0">
-            <span>
-              <span className="font-semibold text-ink">
-                {Number(item.quantity)}× {item.productName}
-              </span>
-              {item.notes ? <span className="block text-[12.5px] text-warning-700">“{item.notes}”</span> : null}
-            </span>
-            <span className="font-semibold">{rupiah(item.subtotal)}</span>
-          </div>
-        ))}
-        <div className="mt-2 flex justify-between">
-          <span className="text-ink-2">Total</span>
-          <span className="text-xl font-extrabold">{rupiah(order.subtotal)}</span>
-        </div>
-      </div>
-      {active ? (
-        <div className="space-y-2">
-          <div className="flex gap-2">
-            {next && canProcess ? (
-              <Button className="flex-1" loading={busy} onClick={() => onAdvance(next.status)}>
-                {next.label}
-              </Button>
-            ) : null}
-            <Button variant="success" className="flex-1" loading={paying} onClick={onPay}>
-              Bayar di Kasir
-            </Button>
-          </div>
-          <div className="flex gap-2">
-            {wa ? (
-              <a href={`https://wa.me/${wa}`} target="_blank" rel="noreferrer" className="flex-1 rounded-lg border border-gray-200 py-2.5 text-center text-sm font-semibold text-ink">
-                Hubungi via WhatsApp
-              </a>
-            ) : null}
-            {canProcess ? (
-              <Button variant="dangerOutline" className="flex-1" onClick={onCancel}>
-                Batalkan
-              </Button>
-            ) : null}
-          </div>
-        </div>
-      ) : null}
-    </div>
-  );
-}
