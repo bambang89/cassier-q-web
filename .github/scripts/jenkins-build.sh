@@ -10,9 +10,12 @@ SHA="${SHA:-}"
 FOLLOW_TIMEOUT="${FOLLOW_TIMEOUT:-300}"
 LOG_FILE="${LOG_FILE:-jenkins.log}"
 
-# Secrets yang ditempel sering ikut membawa spasi / baris baru → curl menolak URL-nya.
-trim() { printf '%s' "$1" | tr -d '[:space:]'; }
-JENKINS_URL=$(trim "$JENKINS_URL"); JENKINS_USER=$(trim "$JENKINS_USER"); JENKINS_API_TOKEN=$(trim "$JENKINS_API_TOKEN")
+# Secrets yang ditempel sering ikut membawa spasi, baris baru, atau garis tabel terminal (│)
+# → curl menolak URL-nya. Sisakan hanya karakter yang sah untuk masing-masing isian.
+keep() { printf '%s' "$1" | LC_ALL=C tr -cd "$2"; }
+JENKINS_URL=$(keep "$JENKINS_URL" 'A-Za-z0-9:/._~-')
+JENKINS_USER=$(keep "$JENKINS_USER" 'A-Za-z0-9._@-')
+JENKINS_API_TOKEN=$(keep "$JENKINS_API_TOKEN" 'A-Za-z0-9')
 JENKINS_URL="${JENKINS_URL%/}"
 case "$JENKINS_URL" in
   http://*|https://*) ;;
