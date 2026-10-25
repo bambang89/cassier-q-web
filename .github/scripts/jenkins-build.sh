@@ -10,9 +10,21 @@ SHA="${SHA:-}"
 FOLLOW_TIMEOUT="${FOLLOW_TIMEOUT:-300}"
 LOG_FILE="${LOG_FILE:-jenkins.log}"
 
+# Secrets yang ditempel sering ikut membawa spasi / baris baru → curl menolak URL-nya.
+trim() { printf '%s' "$1" | tr -d '[:space:]'; }
+JENKINS_URL=$(trim "$JENKINS_URL"); JENKINS_USER=$(trim "$JENKINS_USER"); JENKINS_API_TOKEN=$(trim "$JENKINS_API_TOKEN")
 JENKINS_URL="${JENKINS_URL%/}"
+case "$JENKINS_URL" in
+  http://*|https://*) ;;
+  *) echo "::error title=JENKINS_URL tidak valid::Secret JENKINS_URL harus diawali https:// (mis. https://jenkins.43-134-16-30.sslip.io), tanpa path /job/..."; exit 1 ;;
+esac
 api() { curl -fsS --retry 3 -u "$JENKINS_USER:$JENKINS_API_TOKEN" "$@"; }
 enc() { jq -rn --arg v "$1" '$v|@uri'; }
+
+if ! api -o /dev/null "$JENKINS_URL/api/json"; then
+  echo "::error title=Tidak bisa login ke Jenkins::Cek secrets JENKINS_URL, JENKINS_USER, dan JENKINS_API_TOKEN (token dari Jenkins → user → Security → API Token)."
+  exit 1
+fi
 
 ROOT_URL="$JENKINS_URL/job/$(enc "$JOB")"
 # A branch job's name is the URL-encoded ref, and that name is encoded again in the URL
