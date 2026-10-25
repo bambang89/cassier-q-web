@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 
 import type { Product } from '@/types/models';
 import { Alert } from '@/lib/alert';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { fetchProductUnits } from '@/store/slices/productUnitsSlice';
-import { restockProduct } from '@/store/slices/productsSlice';
+import { fetchProductUnits } from '@/lib/store/slices/productUnitsSlice';
+import { restockProduct } from '@/lib/store/slices/productsSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
 import { resolvePurchaseUnitChoices } from '@/utils/productUnits';
 import { Button } from '@/components/ui/Button';
 import { FormControl, Input, Select } from '@/components/ui/Field';

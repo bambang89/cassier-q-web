@@ -1,20 +1,13 @@
 'use client';
 
 import type { Product } from '@/types/models';
-import { cn } from '@/lib/cn';
+import { cn } from '@/utils/cn';
 import { LOW_STOCK_THRESHOLD, emojiForProduct, paletteColorFor } from '@/utils/productDisplay';
 import { firstStep } from '@/utils/priceTiers';
 import { isBundle } from '@/utils/bundles';
 import { Badge } from '@/components/ui/Display';
-import type { BadgeVariant } from '@/components/ui/Display';
-
-export type ProductGridCardVariant = 'pos' | 'catalog';
-
-function stockStatus(item: Product): { label: string; variant: BadgeVariant } {
-  if (item.stockQuantity <= 0) return { label: 'Habis', variant: 'error' };
-  if (item.stockQuantity <= LOW_STOCK_THRESHOLD) return { label: 'Menipis', variant: 'warning' };
-  return { label: 'Aman', variant: 'success' };
-}
+import type { ProductGridCardVariant } from '@/features/products/types';
+import { stockStatus } from '@/features/products/utils';
 
 /**
  * 'pos': kartu jual di Kasir — stok polos, klik mati bila stok habis.

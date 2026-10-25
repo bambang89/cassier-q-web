@@ -4,36 +4,32 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import type { Product } from '@/types/models';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { deleteProduct, fetchProducts, setSearch } from '@/store/slices/productsSlice';
-import { fetchCategories } from '@/store/slices/categoriesSlice';
+import type { MenuAction } from '@/types/ui';
+import { deleteProduct, fetchProducts, setSearch } from '@/lib/store/slices/productsSlice';
+import { fetchCategories } from '@/lib/store/slices/categoriesSlice';
+import { Alert } from '@/lib/alert';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
 import { usePermissions } from '@/hooks/usePermissions';
-import { useMenuAccess } from '@/navigation/menu';
+import { useMenuAccess } from '@/hooks/useMenuAccess';
 import { LOW_STOCK_THRESHOLD, emojiForProduct, paletteColorFor } from '@/utils/productDisplay';
 import { bundleContents, isBundle } from '@/utils/bundles';
-import { Alert } from '@/lib/alert';
-import { PageBody, PageHeader } from '@/components/layout/PageHeader';
+import { PageBody, PageHeader } from '@/components/common/PageHeader';
 import { Modal } from '@/components/ui/Modal';
 import { AlertDialog } from '@/components/ui/AlertDialog';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Field';
 import { Badge, EmptyState } from '@/components/ui/Display';
-import type { BadgeVariant } from '@/components/ui/Display';
 import { ActionMenu } from '@/components/ui/ActionMenu';
-import type { MenuAction } from '@/components/ui/ActionMenu';
 import { LoadingBlock } from '@/components/ui/Spinner';
-import { AlertTriangleIcon, BarcodeIcon, BoxIcon, CloseIcon, PlusIcon, SearchIcon } from '@/components/icons/LineIcons';
-import { CategoryChips, ProductGridCard } from '@/components/product/ProductGridCard';
-import { BarcodeScanner } from '@/components/product/BarcodeScanner';
-import { RestockForm } from '@/features/products/RestockForm';
+import { BarcodeScanner } from '@/components/common/BarcodeScanner';
+import { BoxIcon } from '@/components/ui/icons/NavIcons';
+import { SearchIcon, BarcodeIcon, PlusIcon, CloseIcon } from '@/components/ui/icons/ActionIcons';
+import { AlertTriangleIcon } from '@/components/ui/icons/DataIcons';
+import { CategoryChips, ProductGridCard } from '@/features/products/components/ProductGridCard';
+import { RestockForm } from '@/features/products/components/RestockForm';
+import { stockVariant } from '@/features/products/utils';
 
 const SEARCH_DEBOUNCE_MS = 350;
-
-function stockVariant(product: Product): BadgeVariant {
-  if (product.stockQuantity <= 0) return 'error';
-  if (product.stockQuantity <= LOW_STOCK_THRESHOLD) return 'warning';
-  return 'neutral';
-}
 
 export default function ProductsPage() {
   const router = useRouter();

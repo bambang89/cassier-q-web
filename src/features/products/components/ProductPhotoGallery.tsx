@@ -3,11 +3,11 @@
 import { useEffect } from 'react';
 
 import { Alert } from '@/lib/alert';
-import { photoProblem, pickPhoto } from '@/lib/pickPhoto';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { addProductPhoto, deleteProductPhoto, fetchProductPhotos } from '@/store/slices/productPhotosSlice';
+import { addProductPhoto, deleteProductPhoto, fetchProductPhotos } from '@/lib/store/slices/productPhotosSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
+import { photoProblem, pickPhoto } from '@/utils/pickPhoto';
 import { Spinner } from '@/components/ui/Spinner';
-import { PlusIcon, TrashIcon } from '@/components/icons/LineIcons';
+import { TrashIcon, PlusIcon } from '@/components/ui/icons/ActionIcons';
 
 // Sama dengan MAX_PRODUCT_PHOTOS di backend.
 const MAX_PHOTOS = 5;

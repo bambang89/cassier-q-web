@@ -1,12 +1,9 @@
 'use client';
 
+import { formatRupiah } from '@/utils/format';
 import { Button } from '@/components/ui/Button';
-import { PlusIcon, TrashIcon } from '@/components/icons/LineIcons';
-
-/** Baris harga grosir yang sedang diketik. */
-export type TierDraft = { minQuantity: string; unitPrice: string };
-
-const rupiah = (value: number) => `Rp${Math.round(value).toLocaleString('id-ID')}`;
+import { TrashIcon, PlusIcon } from '@/components/ui/icons/ActionIcons';
+import type { TierDraft } from '@/features/products/types';
 
 /** Editor "Harga Grosir": ≥N satuan → harga per satuan, dengan persen hemat dari harga normal. */
 export function PriceTiersSection({
@@ -42,7 +39,7 @@ export function PriceTiersSection({
       </p>
       <div className="mt-3 flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2.5 text-sm">
         <span className="text-ink-2">1 {unitName} ke atas (harga normal)</span>
-        <span className="font-semibold text-ink">{normalPrice > 0 ? `${rupiah(normalPrice)} / ${unitName}` : '—'}</span>
+        <span className="font-semibold text-ink">{normalPrice > 0 ? `${formatRupiah(normalPrice)} / ${unitName}` : '—'}</span>
       </div>
       {tiers.map((tier, index) => {
         const price = Number(tier.unitPrice || 0);

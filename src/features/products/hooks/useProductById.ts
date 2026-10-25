@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react';
 
-import * as productsApi from '@/api/productsApi';
 import type { Product } from '@/types/models';
-import { useAppSelector } from '@/store/hooks';
+import * as productsApi from '@/services/productsApi';
+import { useAppSelector } from '@/hooks/store';
 
 /**
  * Produk berdasarkan id: dari daftar di store bila ada, selain itu dicari ke

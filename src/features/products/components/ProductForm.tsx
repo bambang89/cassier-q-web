@@ -5,25 +5,26 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import type { Product } from '@/types/models';
-import * as productsApi from '@/api/productsApi';
-import { apiErrorMessage } from '@/api/errors';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { fetchCategories } from '@/store/slices/categoriesSlice';
-import { fetchUnits } from '@/store/slices/unitsSlice';
-import { createProduct, fetchProducts, updateProduct, uploadProductPhoto } from '@/store/slices/productsSlice';
-import { usePermissions } from '@/hooks/usePermissions';
+import * as productsApi from '@/services/productsApi';
+import { fetchCategories } from '@/lib/store/slices/categoriesSlice';
+import { fetchUnits } from '@/lib/store/slices/unitsSlice';
+import { createProduct, fetchProducts, updateProduct, uploadProductPhoto } from '@/lib/store/slices/productsSlice';
 import { Alert } from '@/lib/alert';
-import { photoProblem, pickPhoto } from '@/lib/pickPhoto';
-import { PageBody, PageHeader } from '@/components/layout/PageHeader';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
+import { usePermissions } from '@/hooks/usePermissions';
+import { apiErrorMessage } from '@/utils/apiErrors';
+import { photoProblem, pickPhoto } from '@/utils/pickPhoto';
+import { PageBody, PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { FormControl, Input, Select, TextArea } from '@/components/ui/Field';
-import { BarcodeIcon, BoxIcon } from '@/components/icons/LineIcons';
-import { BarcodeScanner } from '@/components/product/BarcodeScanner';
-import { PriceTiersSection } from './PriceTiersSection';
-import type { TierDraft } from './PriceTiersSection';
-import { ProductPhotoGallery } from './ProductPhotoGallery';
-import { ProductUnitsSection } from './ProductUnitsSection';
-import { generateSku } from './productUtils';
+import { BarcodeScanner } from '@/components/common/BarcodeScanner';
+import { BoxIcon } from '@/components/ui/icons/NavIcons';
+import { BarcodeIcon } from '@/components/ui/icons/ActionIcons';
+import { PriceTiersSection } from '@/features/products/components/PriceTiersSection';
+import { ProductPhotoGallery } from '@/features/products/components/ProductPhotoGallery';
+import { ProductUnitsSection } from '@/features/products/components/ProductUnitsSection';
+import { generateSku } from '@/features/products/utils';
+import type { TierDraft } from '@/features/products/types';
 
 function Section({ title, description, children }: { title: string; description?: string; children: React.ReactNode }) {
   return (

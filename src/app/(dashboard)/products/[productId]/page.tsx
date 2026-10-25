@@ -2,12 +2,12 @@
 
 import { useParams } from 'next/navigation';
 
-import { PageHeader } from '@/components/layout/PageHeader';
+import { PageHeader } from '@/components/common/PageHeader';
 import { LoadingBlock } from '@/components/ui/Spinner';
 import { EmptyState } from '@/components/ui/Display';
-import { BoxIcon } from '@/components/icons/LineIcons';
-import { ProductForm } from '@/features/products/ProductForm';
-import { useProductById } from '@/features/products/useProductById';
+import { BoxIcon } from '@/components/ui/icons/NavIcons';
+import { ProductForm } from '@/features/products/components/ProductForm';
+import { useProductById } from '@/features/products/hooks/useProductById';
 
 export default function EditProductPage() {
   const { productId } = useParams<{ productId: string }>();

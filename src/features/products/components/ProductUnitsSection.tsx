@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 
 import type { Product, Unit } from '@/types/models';
 import { Alert } from '@/lib/alert';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { fetchProductUnits, registerProductUnit } from '@/store/slices/productUnitsSlice';
+import { fetchProductUnits, registerProductUnit } from '@/lib/store/slices/productUnitsSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
 import { Badge } from '@/components/ui/Display';
 import { Button } from '@/components/ui/Button';
 import { CheckBox, FormControl, Input, Select } from '@/components/ui/Field';
