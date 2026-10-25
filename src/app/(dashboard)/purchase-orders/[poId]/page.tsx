@@ -3,22 +3,24 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 
-import type { ReceiveItemPayload } from '@/api/purchaseOrdersApi';
 import type { PurchaseOrder } from '@/types/models';
+import type { ReceiveItemPayload } from '@/types/api';
 import { Alert } from '@/lib/alert';
-import { cn } from '@/lib/cn';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { cancelPurchaseOrder, clearCurrentPurchaseOrder, fetchPurchaseOrder, receivePurchaseOrder } from '@/store/slices/purchaseOrdersSlice';
+import { cancelPurchaseOrder, clearCurrentPurchaseOrder, fetchPurchaseOrder, receivePurchaseOrder } from '@/lib/store/slices/purchaseOrdersSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
 import { usePermissions } from '@/hooks/usePermissions';
+import { cn } from '@/utils/cn';
 import { hasAnyReceived, isCancelled, isFullyReceived, poStatusMeta, remainingToReceive } from '@/utils/purchaseOrders';
-import { PageBody, PageHeader } from '@/components/layout/PageHeader';
+import { PageBody, PageHeader } from '@/components/common/PageHeader';
 import { Modal } from '@/components/ui/Modal';
 import { AlertDialog } from '@/components/ui/AlertDialog';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Field';
 import { Badge } from '@/components/ui/Display';
 import { LoadingBlock } from '@/components/ui/Spinner';
-import { ReceiptIcon, ReceiveIcon, StickyNoteIcon } from '@/components/icons/LineIcons';
+import { ReceiptIcon } from '@/components/ui/icons/NavIcons';
+import { ReceiveIcon } from '@/components/ui/icons/ActionIcons';
+import { StickyNoteIcon } from '@/components/ui/icons/DataIcons';
 
 export default function PurchaseOrderDetailPage() {
   const { poId } = useParams<{ poId: string }>();

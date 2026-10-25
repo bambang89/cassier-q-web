@@ -3,15 +3,16 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { fetchPurchaseOrders } from '@/store/slices/purchaseOrdersSlice';
+import { fetchPurchaseOrders } from '@/lib/store/slices/purchaseOrdersSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
 import { usePermissions } from '@/hooks/usePermissions';
 import { poStatusMeta } from '@/utils/purchaseOrders';
-import { PageBody, PageHeader } from '@/components/layout/PageHeader';
+import { PageBody, PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Badge, EmptyState, KpiCard } from '@/components/ui/Display';
 import { LoadingBlock } from '@/components/ui/Spinner';
-import { BoxIcon, PlusIcon } from '@/components/icons/LineIcons';
+import { BoxIcon } from '@/components/ui/icons/NavIcons';
+import { PlusIcon } from '@/components/ui/icons/ActionIcons';
 
 export default function PurchaseOrdersPage() {
   const router = useRouter();

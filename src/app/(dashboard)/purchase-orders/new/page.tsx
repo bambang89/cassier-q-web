@@ -3,27 +3,22 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import type { CreatePurchaseOrderItemPayload } from '@/api/purchaseOrdersApi';
 import type { Product } from '@/types/models';
+import type { CreatePurchaseOrderItemPayload } from '@/types/api';
 import { Alert } from '@/lib/alert';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { fetchSuppliers } from '@/store/slices/suppliersSlice';
-import { fetchProducts } from '@/store/slices/productsSlice';
-import { fetchProductUnits } from '@/store/slices/productUnitsSlice';
-import { createPurchaseOrder } from '@/store/slices/purchaseOrdersSlice';
+import { fetchSuppliers } from '@/lib/store/slices/suppliersSlice';
+import { fetchProducts } from '@/lib/store/slices/productsSlice';
+import { fetchProductUnits } from '@/lib/store/slices/productUnitsSlice';
+import { createPurchaseOrder } from '@/lib/store/slices/purchaseOrdersSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
 import { resolvePurchaseUnitChoices } from '@/utils/productUnits';
-import { PageBody, PageHeader } from '@/components/layout/PageHeader';
+import { PageBody, PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { FormControl, Input, Select, TextArea } from '@/components/ui/Field';
-import { PlusIcon, ReceiptIcon, TrashIcon } from '@/components/icons/LineIcons';
-
-type LineDraft = { key: string; productId: string | null; unitId: string | null; quantity: string; unitCost: string };
-
-let lineKeySeq = 0;
-function newLine(): LineDraft {
-  lineKeySeq += 1;
-  return { key: `line-${lineKeySeq}`, productId: null, unitId: null, quantity: '', unitCost: '' };
-}
+import { ReceiptIcon } from '@/components/ui/icons/NavIcons';
+import { TrashIcon, PlusIcon } from '@/components/ui/icons/ActionIcons';
+import type { LineDraft } from '@/features/purchase-orders/types';
+import { newLine } from '@/features/purchase-orders/utils';
 
 export default function PurchaseOrderFormPage() {
   const router = useRouter();
