@@ -1,4 +1,4 @@
-import type { CartItem, PriceTier, Product } from '@/types/models';
+import type { CartItem, PriceTier, Product, LinePricing } from '@/types/models';
 
 // Wholesale ("grosir") tiered prices. Same rule as the API (PriceTierService.pick):
 // the product's total base quantity in the cart picks the highest step it reaches.
@@ -23,17 +23,6 @@ export function nextStep(product: Product, totalBase: number): PriceTier | null 
 export function firstStep(product: Product): PriceTier | null {
   return stepsOf(product)[0] ?? null;
 }
-
-export type LinePricing = {
-  /** Price per sold unit (base price × unit conversion). */
-  unitPrice: number;
-  /** Normal price per sold unit, before wholesale. */
-  normalUnitPrice: number;
-  subtotal: number;
-  /** Total base quantity of this product across the cart. */
-  productTotalBase: number;
-  wholesale: boolean;
-};
 
 /** Total base quantity per product across the cart (dus + pcs are added together). */
 export function baseTotals(items: CartItem[]): Map<string, number> {

@@ -1,24 +1,8 @@
-// Pengganti Alert.alert dari React Native: API yang sama (judul, pesan,
-// tombol) supaya logika layar mobile bisa dipakai apa adanya. Dirender oleh
-// <AlertHost /> di root.
-export interface AlertButton {
-  text: string;
-  style?: 'default' | 'cancel' | 'destructive';
-  onPress?: () => void;
-}
-
-export interface AlertRequest {
-  id: number;
-  title: string;
-  message?: string;
-  buttons: AlertButton[];
-}
-
-type Listener = (queue: AlertRequest[]) => void;
+import type { AlertButton, AlertRequest, AlertListener } from '@/types/ui';
 
 let queue: AlertRequest[] = [];
 let nextId = 1;
-const listeners = new Set<Listener>();
+const listeners = new Set<AlertListener>();
 
 function emit() {
   listeners.forEach((listener) => listener(queue));
@@ -36,7 +20,7 @@ export function dismissAlert(id: number) {
   emit();
 }
 
-export function subscribeAlerts(listener: Listener): () => void {
+export function subscribeAlerts(listener: AlertListener): () => void {
   listeners.add(listener);
   listener(queue);
   return () => {

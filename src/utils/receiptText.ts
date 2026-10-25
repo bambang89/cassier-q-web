@@ -1,13 +1,9 @@
 import { PAYMENT_METHODS } from '@/types/models';
-import type { Receipt } from '@/types/models';
+import type { Receipt, ReceiptRow } from '@/types/models';
+import { formatRupiah } from '@/utils/format';
 
 /** Default line width = 58mm paper (32 chars). 80mm paper = 48 chars. */
 const WIDTH = 32;
-
-/** Formats an amount as compact Rupiah for receipts, e.g. `Rp41.000`. */
-function money(value: number): string {
-  return `Rp${Math.round(value).toLocaleString('id-ID')}`;
-}
 
 /** Centers `text` within a line of `width` characters (left padding only). */
 function center(text: string, width = WIDTH): string {
@@ -36,18 +32,6 @@ export function paymentMethodLabel(method: string): string {
 }
 
 /**
- * Baris terstruktur untuk render di layar (`ReceiptScreen`) — `pair` dirender
- * sebagai flex row (`justifyContent: 'space-between'`) supaya nominal harga
- * benar-benar rata ke tepi kanan kartu, bukan cuma diganjal spasi ala teks
- * monospace (yang gampang meleset kalau font tidak benar-benar fixed-width).
- */
-export type ReceiptRow =
-  | { kind: 'center'; text: string }
-  | { kind: 'line'; text: string }
-  | { kind: 'divider'; text: string }
-  | { kind: 'pair'; label: string; value: string };
-
-/**
  * Builds the structured receipt rows used for printing.
  * `width` is the characters per line: 32 for 58mm paper, 48 for 80mm.
  */
@@ -68,27 +52,27 @@ export function buildReceiptRows(receipt: Receipt, width = WIDTH): ReceiptRow[] 
     rows.push({ kind: 'line', text: item.productName });
     rows.push({
       kind: 'pair',
-      label: `  ${item.quantity} ${item.unitName} x ${money(item.unitPrice)}`,
-      value: money(item.subtotal),
+      label: `  ${item.quantity} ${item.unitName} x ${formatRupiah(item.unitPrice)}`,
+      value: formatRupiah(item.subtotal),
     });
   }
 
   rows.push({ kind: 'divider', text: divider('-', width) });
-  rows.push({ kind: 'pair', label: 'Subtotal', value: money(receipt.subtotal) });
+  rows.push({ kind: 'pair', label: 'Subtotal', value: formatRupiah(receipt.subtotal) });
   if (receipt.discountAmount > 0) {
-    rows.push({ kind: 'pair', label: 'Diskon', value: `-${money(receipt.discountAmount)}` });
+    rows.push({ kind: 'pair', label: 'Diskon', value: `-${formatRupiah(receipt.discountAmount)}` });
   }
-  if (receipt.taxAmount > 0) rows.push({ kind: 'pair', label: 'Pajak', value: money(receipt.taxAmount) });
-  rows.push({ kind: 'pair', label: 'TOTAL', value: money(receipt.grandTotal) });
+  if (receipt.taxAmount > 0) rows.push({ kind: 'pair', label: 'Pajak', value: formatRupiah(receipt.taxAmount) });
+  rows.push({ kind: 'pair', label: 'TOTAL', value: formatRupiah(receipt.grandTotal) });
   rows.push({
     kind: 'pair',
     label: `Bayar (${paymentMethodLabel(receipt.paymentMethod)})`,
-    value: money(receipt.paymentAmount),
+    value: formatRupiah(receipt.paymentAmount),
   });
-  rows.push({ kind: 'pair', label: 'Kembalian', value: money(receipt.changeAmount) });
+  rows.push({ kind: 'pair', label: 'Kembalian', value: formatRupiah(receipt.changeAmount) });
 
   if (receipt.debtAmount && receipt.debtAmount > 0) {
-    rows.push({ kind: 'pair', label: 'Sisa Utang', value: money(receipt.debtAmount) });
+    rows.push({ kind: 'pair', label: 'Sisa Utang', value: formatRupiah(receipt.debtAmount) });
   }
   rows.push({ kind: 'divider', text: divider('=', width) });
 

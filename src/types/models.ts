@@ -1,3 +1,4 @@
+
 // --- Auth --------------------------------------------------------------
 
 export type RoleAssignment = {
@@ -120,16 +121,6 @@ export type ProductPhoto = {
   id: string;
   imageUrl: string;
   sortOrder: number;
-};
-
-export type Stock = {
-  productId: string;
-  productName: string;
-  storeId: string;
-  quantityBaseUnit: number;
-  minimumStock: number | null;
-  maximumStock: number | null;
-  updatedAt: string;
 };
 
 /** Satuan produk (pcs, dus, kg, ...) — katalog global, bukan per-toko. */
@@ -424,88 +415,25 @@ export type Page<T> = {
 
 // --- Inventori ---------------------------------------------------------
 
-export type StockStatus = 'OUT' | 'LOW' | 'OK';
-
-export type StockItem = {
-  productId: string;
-  sku: string;
-  productName: string;
-  categoryName: string;
-  baseUnitName: string;
-  imageUrl: string | null;
-  stock: number;
-  minimumStock: number;
-  costPrice: number | null;
-  /** stok × harga modal */
-  stockValue: number | null;
-  status: StockStatus;
+export type LinePricing = {
+  /** Price per sold unit (base price × unit conversion). */
+  unitPrice: number;
+  /** Normal price per sold unit, before wholesale. */
+  normalUnitPrice: number;
+  subtotal: number;
+  /** Total base quantity of this product across the cart. */
+  productTotalBase: number;
+  wholesale: boolean;
 };
 
-export type StockSummary = {
-  products: number;
-  outOfStock: number;
-  lowStock: number;
-  totalValue: number;
-  items: StockItem[];
-};
-
-export type StockMovementItem = {
-  id: string;
-  createdAt: string;
-  productId: string;
-  productName: string;
-  movementType: string;
-  quantity: number;
-  unitName: string;
-  quantityBase: number;
-  stockBefore: number;
-  stockAfter: number;
-  referenceType: string | null;
-  referenceId: string | null;
-  notes: string | null;
-  createdBy: string | null;
-};
-
-export type OpnameResult = {
-  lines: {
-    productId: string;
-    productName: string;
-    systemQuantity: number;
-    countedQuantity: number;
-    difference: number;
-    differenceValue: number;
-  }[];
-  totalDifferenceValue: number;
-};
-
-export type BadStockReason = 'DAMAGED' | 'EXPIRED' | 'LOST' | 'DEFECT' | 'CUSTOMER_RETURN';
-export type BadStockStatus = 'PENDING' | 'QUARANTINED' | 'RETURNED' | 'DISPOSED' | 'CANCELLED';
-
-export type BadStockItem = {
-  id: string;
-  createdAt: string;
-  productId: string;
-  productName: string;
-  quantity: number;
-  unitName: string;
-  quantityBase: number;
-  reason: BadStockReason;
-  notes: string | null;
-  photoUrl: string | null;
-  status: BadStockStatus;
-  costValue: number | null;
-  stockDeducted: boolean;
-  reportedBy: string | null;
-  approvedBy: string | null;
-  approvedAt: string | null;
-  supplierName: string | null;
-  resolutionNote: string | null;
-};
-
-export type BadStockReport = {
-  totalValue: number;
-  records: number;
-  byReason: { reason: BadStockReason; count: number; value: number }[];
-  topProducts: { productId: string; productName: string; quantityBase: number; value: number }[];
-  pending: number;
-};
+/**
+ * Baris terstruktur untuk render di layar (`ReceiptScreen`) — `pair` dirender
+ * sebagai flex row (`justifyContent: 'space-between'`) supaya nominal harga
+ * benar-benar rata ke tepi kanan kartu, bukan cuma diganjal spasi ala teks
+ * monospace (yang gampang meleset kalau font tidak benar-benar fixed-width).
+ */
+export type ReceiptRow =
+  | { kind: 'center'; text: string }
+  | { kind: 'line'; text: string }
+  | { kind: 'divider'; text: string }
+  | { kind: 'pair'; label: string; value: string };
