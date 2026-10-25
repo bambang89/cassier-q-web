@@ -21,10 +21,14 @@ esac
 api() { curl -fsS --retry 3 -u "$JENKINS_USER:$JENKINS_API_TOKEN" "$@"; }
 enc() { jq -rn --arg v "$1" '$v|@uri'; }
 
-if ! api -o /dev/null "$JENKINS_URL/api/json"; then
-  echo "::error title=Tidak bisa login ke Jenkins::Cek secrets JENKINS_URL, JENKINS_USER, dan JENKINS_API_TOKEN (token dari Jenkins → user → Security → API Token)."
-  exit 1
-fi
+HOST=$(printf '%s' "$JENKINS_URL" | sed -E 's#^https?://([^/]+).*#\1#')
+CODE=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 -u "$JENKINS_USER:$JENKINS_API_TOKEN" "$JENKINS_URL/api/json" || true)
+case "$CODE" in
+  200) ;;
+  000) echo "::error title=Tidak bisa terhubung ke Jenkins::Host '${HOST}' tidak bisa dijangkau dari GitHub. JENKINS_URL harus alamat publik: https://jenkins.43-134-16-30.sslip.io"; exit 1 ;;
+  401|403) echo "::error title=Login Jenkins ditolak (HTTP $CODE)::Host benar, tapi JENKINS_USER / JENKINS_API_TOKEN salah. Buat token baru di Jenkins → user → Security → API Token."; exit 1 ;;
+  *) echo "::error title=Jenkins menjawab HTTP $CODE::Cek JENKINS_URL (host '${HOST}'); harus https://jenkins.43-134-16-30.sslip.io tanpa path."; exit 1 ;;
+esac
 
 ROOT_URL="$JENKINS_URL/job/$(enc "$JOB")"
 # A branch job's name is the URL-encoded ref, and that name is encoded again in the URL
