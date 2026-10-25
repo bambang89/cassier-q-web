@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-import { formatRupiah } from '@/lib/pos';
-import { cn } from '@/lib/cn';
-import { CartIcon, ChevronRightIcon } from '@/components/icons/LineIcons';
+import { cn } from '@/utils/cn';
+import { formatRupiah } from '@/utils/format';
+import { CartIcon } from '@/components/ui/icons/NavIcons';
+import { ChevronRightIcon } from '@/components/ui/icons/ActionIcons';
 
 /** Ringkasan keranjang melayang di atas tab bar (HP); "berdenyut" tiap item bertambah. */
 export function CartBar({ count, total, onClick }: { count: number; total: number; onClick: () => void }) {
@@ -41,7 +42,7 @@ export function CartBar({ count, total, onClick }: { count: number; total: numbe
         </span>
         <span className="min-w-0 flex-1">
           <span className="block text-[12px] text-white/65">{`${count} item · Total`}</span>
-          <span className="block truncate text-lg font-bold text-white">{formatRupiah(total)}</span>
+          <span className="block truncate text-lg font-bold text-white">{formatRupiah(total, true)}</span>
         </span>
         <span className="flex items-center gap-1 rounded-xl bg-primary-600 px-3.5 py-2.5 text-sm font-bold text-white">
           Bayar <ChevronRightIcon size={16} strokeWidth={2.2} />

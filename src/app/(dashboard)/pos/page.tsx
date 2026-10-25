@@ -3,37 +3,39 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import * as productsApi from '@/api/productsApi';
 import type { Order, Product, ProductUnit } from '@/types/models';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { useSettleCustomerOrder } from '@/features/customer-orders/useSettleCustomerOrder';
-import { addItem, clearCart, selectCartCount, selectCartTotal } from '@/store/slices/cartSlice';
-import type { AddItemPayload } from '@/store/slices/cartSlice';
-import { fetchProducts } from '@/store/slices/productsSlice';
-import { fetchProductUnits } from '@/store/slices/productUnitsSlice';
-import { fetchCategories } from '@/store/slices/categoriesSlice';
-import { fetchCustomers } from '@/store/slices/customersSlice';
-import { fetchStoreProfile } from '@/store/slices/storeProfileSlice';
-import { fetchCurrentSession } from '@/store/slices/cashierSessionSlice';
-import { fetchCheckoutSettings } from '@/store/slices/checkoutSettingsSlice';
-import { usePermissions } from '@/hooks/usePermissions';
-import { resolveSaleUnitChoices } from '@/utils/productUnits';
+import * as productsApi from '@/services/productsApi';
+import { addItem, clearCart, selectCartCount, selectCartTotal } from '@/lib/store/slices/cartSlice';
+import { fetchProducts } from '@/lib/store/slices/productsSlice';
+import { fetchProductUnits } from '@/lib/store/slices/productUnitsSlice';
+import { fetchCategories } from '@/lib/store/slices/categoriesSlice';
+import { fetchCustomers } from '@/lib/store/slices/customersSlice';
+import { fetchStoreProfile } from '@/lib/store/slices/storeProfileSlice';
+import { fetchCurrentSession } from '@/lib/store/slices/cashierSessionSlice';
+import { fetchCheckoutSettings } from '@/lib/store/slices/checkoutSettingsSlice';
 import { Alert } from '@/lib/alert';
-import { PPN_RATE, formatRupiah, sessionTimeLabel } from '@/lib/pos';
-import { useIsWide } from '@/lib/useMedia';
-import { PageHeader } from '@/components/layout/PageHeader';
+import type { AddItemPayload } from '@/lib/store/types';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
+import { usePermissions } from '@/hooks/usePermissions';
+import { useIsWide } from '@/hooks/useMedia';
+import { resolveSaleUnitChoices } from '@/utils/productUnits';
+import { formatRupiah } from '@/utils/format';
+import { PageHeader } from '@/components/common/PageHeader';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Field';
 import { EmptyState } from '@/components/ui/Display';
 import { LoadingBlock } from '@/components/ui/Spinner';
-import { BarcodeIcon, BoxIcon, ClipboardIcon, CloseIcon, SearchIcon, UnlockIcon } from '@/components/icons/LineIcons';
-import { CategoryChips, ProductGridCard } from '@/components/product/ProductGridCard';
-import { BarcodeScanner } from '@/components/product/BarcodeScanner';
-import { OrderPanel } from '@/features/pos/OrderPanel';
-import { CartBar } from '@/features/pos/CartBar';
-import { CheckoutForm } from '@/features/pos/CheckoutForm';
-import { DiscountForm, OpenSessionForm } from '@/features/pos/SessionForms';
+import { BarcodeScanner } from '@/components/common/BarcodeScanner';
+import { ClipboardIcon, BoxIcon } from '@/components/ui/icons/NavIcons';
+import { SearchIcon, BarcodeIcon, CloseIcon, UnlockIcon } from '@/components/ui/icons/ActionIcons';
+import { useSettleCustomerOrder } from '@/features/customer-orders/hooks/useSettleCustomerOrder';
+import { PPN_RATE, sessionTimeLabel } from '@/features/pos/utils';
+import { CategoryChips, ProductGridCard } from '@/features/products/components/ProductGridCard';
+import { OrderPanel } from '@/features/pos/components/OrderPanel';
+import { CartBar } from '@/features/pos/components/CartBar';
+import { CheckoutForm } from '@/features/pos/components/CheckoutForm';
+import { DiscountForm, OpenSessionForm } from '@/features/pos/components/SessionForms';
 
 const SEARCH_DEBOUNCE_MS = 350;
 /** Jam (waktu toko) backend menutup otomatis sesi kasir yang masih terbuka. */
@@ -397,7 +399,7 @@ export default function POSPage() {
                     setUnitPicker(null);
                   }}
                 >
-                  {`${unit.unitName} — ${formatRupiah(unitPicker.product.sellingPrice * unit.conversionToBase)}`}
+                  {`${unit.unitName} — ${formatRupiah(unitPicker.product.sellingPrice * unit.conversionToBase, true)}`}
                 </Button>
               ))}
             </div>

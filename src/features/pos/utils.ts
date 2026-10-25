@@ -15,21 +15,9 @@ export function greetingForNow(): string {
   return 'Selamat malam';
 }
 
-export function todayLabel(): string {
-  return new Date().toLocaleDateString('id-ID', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-  });
-}
-
 export function sessionTimeLabel(iso: string): string {
   const date = new Date(iso);
   return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }).replace(':', '.');
-}
-
-export function formatRupiah(value: number): string {
-  return `Rp ${Math.round(value).toLocaleString('id-ID')}`;
 }
 
 /**

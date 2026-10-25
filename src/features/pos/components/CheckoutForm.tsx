@@ -4,29 +4,23 @@ import { useEffect, useRef, useState } from 'react';
 
 import { PAYMENT_METHODS } from '@/types/models';
 import type { CartItem, Order, PaymentMethod, PromoQuote } from '@/types/models';
-import * as promoCodesApi from '@/api/promoCodesApi';
-import { apiErrorMessage, newIdempotencyKey } from '@/api/errors';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { createOrder } from '@/store/slices/ordersSlice';
-import { fetchCustomers } from '@/store/slices/customersSlice';
-import { fetchCurrentSession } from '@/store/slices/cashierSessionSlice';
-import { usePermissions } from '@/hooks/usePermissions';
+import * as promoCodesApi from '@/services/promoCodesApi';
+import { createOrder } from '@/lib/store/slices/ordersSlice';
+import { fetchCustomers } from '@/lib/store/slices/customersSlice';
+import { fetchCurrentSession } from '@/lib/store/slices/cashierSessionSlice';
 import { Alert } from '@/lib/alert';
-import { cn } from '@/lib/cn';
-import { NO_CUSTOMER, PPN_RATE, cashSuggestions, formatRupiah } from '@/lib/pos';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
+import { usePermissions } from '@/hooks/usePermissions';
+import { apiErrorMessage, newIdempotencyKey } from '@/utils/apiErrors';
+import { cn } from '@/utils/cn';
+import { formatRupiah } from '@/utils/format';
 import { Button } from '@/components/ui/Button';
 import { Select } from '@/components/ui/Field';
-import {
-  BarcodeIcon,
-  CheckIcon,
-  CreditCardIcon,
-  DiscountIcon,
-  PeopleIcon,
-  PrintIcon,
-  ReceiveIcon,
-  WalletIcon,
-} from '@/components/icons/LineIcons';
-import { CartItemRow } from './CartItemRow';
+import { PeopleIcon } from '@/components/ui/icons/NavIcons';
+import { BarcodeIcon, ReceiveIcon, CheckIcon, PrintIcon } from '@/components/ui/icons/ActionIcons';
+import { DiscountIcon, WalletIcon, CreditCardIcon } from '@/components/ui/icons/DataIcons';
+import { NO_CUSTOMER, PPN_RATE, cashSuggestions } from '@/features/pos/utils';
+import { CartItemRow } from '@/features/pos/components/CartItemRow';
 
 const PAYMENT_METHOD_ICONS: Record<PaymentMethod, typeof CreditCardIcon> = {
   CASH: WalletIcon,
@@ -203,12 +197,12 @@ export function CheckoutForm({
         <div className="relative overflow-hidden rounded-xl bg-[linear-gradient(135deg,#0B1F33_0%,#123E7A_70%,#1D4ED8_100%)] p-5 text-white">
           <div className="absolute -top-12 -right-10 size-40 rounded-full bg-white/[0.06]" />
           <p className="relative text-[11.5px] font-semibold tracking-[0.1em] text-white/60">TOTAL TAGIHAN</p>
-          <p className="relative mt-0.5 text-[30px] leading-[38px] font-extrabold">{formatRupiah(payableTotal)}</p>
+          <p className="relative mt-0.5 text-[30px] leading-[38px] font-extrabold">{formatRupiah(payableTotal, true)}</p>
           <div className="relative my-3 h-px bg-white/12" />
-          <BillRow label="Subtotal" value={formatRupiah(total)} />
-          {manualDiscount > 0 ? <BillRow label="Diskon" value={`−${formatRupiah(manualDiscount)}`} accent /> : null}
-          {promo ? <BillRow label={`Promo ${promo.code}`} value={`−${formatRupiah(promoDiscount)}`} accent /> : null}
-          {taxAmount > 0 ? <BillRow label={`PPN ${settings?.taxRatePercent ?? 11}%`} value={formatRupiah(taxAmount)} /> : null}
+          <BillRow label="Subtotal" value={formatRupiah(total, true)} />
+          {manualDiscount > 0 ? <BillRow label="Diskon" value={`−${formatRupiah(manualDiscount, true)}`} accent /> : null}
+          {promo ? <BillRow label={`Promo ${promo.code}`} value={`−${formatRupiah(promoDiscount, true)}`} accent /> : null}
+          {taxAmount > 0 ? <BillRow label={`PPN ${settings?.taxRatePercent ?? 11}%`} value={formatRupiah(taxAmount, true)} /> : null}
         </div>
 
         {/* Metode pembayaran */}
@@ -261,7 +255,7 @@ export function CheckoutForm({
             </QuickChip>
             {quickAmounts.map((value) => (
               <QuickChip key={value} active={amountNumber === value} onClick={() => setPaymentAmount(String(value))}>
-                {formatRupiah(value)}
+                {formatRupiah(value, true)}
               </QuickChip>
             ))}
             {selectedCustomer ? (
@@ -287,7 +281,7 @@ export function CheckoutForm({
                 <div className="min-w-0 flex-1">
                   <p className="font-bold tracking-wider text-success-700">{promo.code}</p>
                   <p className="truncate text-[12.5px] text-ink-2">
-                    {promo.description} · hemat {formatRupiah(promoDiscount)}
+                    {promo.description} · hemat {formatRupiah(promoDiscount, true)}
                   </p>
                 </div>
                 <button type="button" onClick={() => setPromo(null)} className="cursor-pointer text-[12.5px] font-semibold text-error-600">
@@ -361,7 +355,7 @@ export function CheckoutForm({
                     options={[
                       { label: 'Tanpa pelanggan (transaksi umum)', value: NO_CUSTOMER },
                       ...customers.map((c) => ({
-                        label: c.balance > 0 ? `${c.name} (utang ${formatRupiah(c.balance)})` : c.name,
+                        label: c.balance > 0 ? `${c.name} (utang ${formatRupiah(c.balance, true)})` : c.name,
                         value: c.id,
                       })),
                     ]}
@@ -399,7 +393,7 @@ export function CheckoutForm({
           loading={submitting === 'receipt'}
           disabled={submitting !== null || shortfall > 0}
         >
-          {`Bayar ${formatRupiah(payableTotal)} & Struk`}
+          {`Bayar ${formatRupiah(payableTotal, true)} & Struk`}
         </Button>
         <div className="mt-2 flex gap-2">
           <Button variant="ghost" onClick={onCancel} disabled={submitting !== null} className="flex-1">
@@ -452,7 +446,7 @@ function StatusBar({ className, label, value }: { className: string; label: stri
   return (
     <div className={cn('mb-3 flex items-center justify-between rounded-lg px-4 py-3', className)}>
       <span className="text-sm font-semibold">{label}</span>
-      <span className="text-lg font-bold">{formatRupiah(value)}</span>
+      <span className="text-lg font-bold">{formatRupiah(value, true)}</span>
     </div>
   );
 }

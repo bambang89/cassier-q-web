@@ -1,11 +1,11 @@
 'use client';
 
 import type { CartItem } from '@/types/models';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { decrementItem, incrementItem } from '@/store/slices/cartSlice';
+import { decrementItem, incrementItem } from '@/lib/store/slices/cartSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
 import { baseTotals, linePricing, nextStep } from '@/utils/priceTiers';
 import { emojiForProduct, paletteColorFor } from '@/utils/productDisplay';
-import { formatRupiah } from '@/lib/pos';
+import { formatRupiah } from '@/utils/format';
 
 export function QtyStepper({ item }: { item: CartItem }) {
   const dispatch = useAppDispatch();
@@ -39,9 +39,9 @@ export function CartItemRow({ item }: { item: CartItem }) {
       <div className="min-w-0 flex-1">
         <p className="truncate text-[13.5px] font-semibold text-ink">{item.product.productName}</p>
         <p className="flex flex-wrap items-center gap-1 text-[12.5px]">
-          {pricing.wholesale ? <span className="text-ink-3 line-through">{formatRupiah(pricing.normalUnitPrice)}</span> : null}
+          {pricing.wholesale ? <span className="text-ink-3 line-through">{formatRupiah(pricing.normalUnitPrice, true)}</span> : null}
           <span className={pricing.wholesale ? 'font-semibold text-success-600' : 'text-ink-3'}>
-            {formatRupiah(pricing.unitPrice)}
+            {formatRupiah(pricing.unitPrice, true)}
             {item.unitConversionToBase !== 1 || item.unitName !== item.product.baseUnitName ? ` / ${item.unitName}` : ''}
             {pricing.wholesale ? ' · Grosir' : ''}
           </span>
@@ -49,7 +49,7 @@ export function CartItemRow({ item }: { item: CartItem }) {
         {next ? (
           <p className="truncate text-[12px] text-primary-600">
             +{Math.ceil(next.minQuantity - pricing.productTotalBase)} {item.product.baseUnitName} lagi →{' '}
-            {formatRupiah(next.unitPrice)}/{item.product.baseUnitName}
+            {formatRupiah(next.unitPrice, true)}/{item.product.baseUnitName}
           </p>
         ) : null}
       </div>

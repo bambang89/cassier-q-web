@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import type { Order } from '@/types/models';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { useSettleCustomerOrder } from '@/features/customer-orders/useSettleCustomerOrder';
-import { clearCart, selectCartTotal } from '@/store/slices/cartSlice';
-import { PageHeader } from '@/components/layout/PageHeader';
-import { CheckoutForm } from '@/features/pos/CheckoutForm';
+import { clearCart, selectCartTotal } from '@/lib/store/slices/cartSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
+import { PageHeader } from '@/components/common/PageHeader';
+import { useSettleCustomerOrder } from '@/features/customer-orders/hooks/useSettleCustomerOrder';
+import { CheckoutForm } from '@/features/pos/components/CheckoutForm';
 
 /** Halaman pembayaran penuh untuk HP (layar lebar memakai modal di Kasir). */
 export default function CheckoutPage() {

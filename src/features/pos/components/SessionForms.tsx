@@ -3,11 +3,11 @@
 import { useState } from 'react';
 
 import { Alert } from '@/lib/alert';
-import { useAppDispatch } from '@/store/hooks';
-import { openSession } from '@/store/slices/cashierSessionSlice';
+import { openSession } from '@/lib/store/slices/cashierSessionSlice';
+import { useAppDispatch } from '@/hooks/store';
 import { Button } from '@/components/ui/Button';
 import { FormControl, Input } from '@/components/ui/Field';
-import { ChevronDownIcon, UnlockIcon } from '@/components/icons/LineIcons';
+import { ChevronDownIcon, UnlockIcon } from '@/components/ui/icons/ActionIcons';
 
 export function OpenSessionForm({ onDone, onCancel }: { onDone: () => void; onCancel: () => void }) {
   const dispatch = useAppDispatch();

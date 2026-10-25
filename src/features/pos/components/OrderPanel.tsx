@@ -1,10 +1,13 @@
 'use client';
 
 import type { CartItem } from '@/types/models';
-import { formatRupiah } from '@/lib/pos';
+import { formatRupiah } from '@/utils/format';
 import { Button } from '@/components/ui/Button';
-import { CartIcon, ClockIcon, DiscountIcon, NoteIcon, TrashIcon } from '@/components/icons/LineIcons';
-import { CartItemRow } from './CartItemRow';
+import { SummaryRow } from '@/components/ui/SummaryRow';
+import { CartIcon } from '@/components/ui/icons/NavIcons';
+import { ClockIcon, DiscountIcon, NoteIcon } from '@/components/ui/icons/DataIcons';
+import { TrashIcon } from '@/components/ui/icons/ActionIcons';
+import { CartItemRow } from '@/features/pos/components/CartItemRow';
 
 /** Panel "Pesanan Saat Ini" di kanan layar Kasir (layar lebar) — tablet-pos.html. */
 export function OrderPanel({
@@ -78,12 +81,12 @@ export function OrderPanel({
       )}
 
       <div className="border-t border-dashed border-gray-200 px-5 pt-3 pb-4">
-        <Row label="Subtotal" value={formatRupiah(subtotal)} />
-        {discountAmount > 0 ? <Row label="Diskon" value={`− ${formatRupiah(discountAmount)}`} valueClass="text-success-600" /> : null}
-        {taxAmount > 0 ? <Row label={`Pajak (${taxRatePercent}%)`} value={formatRupiah(taxAmount)} /> : null}
+        <SummaryRow className="py-1 text-[13.5px]" label="Subtotal" value={formatRupiah(subtotal, true)} />
+        {discountAmount > 0 ? <SummaryRow className="py-1 text-[13.5px]" label="Diskon" value={`− ${formatRupiah(discountAmount, true)}`} valueClass="text-success-600" /> : null}
+        {taxAmount > 0 ? <SummaryRow className="py-1 text-[13.5px]" label={`Pajak (${taxRatePercent}%)`} value={formatRupiah(taxAmount, true)} /> : null}
         <div className="mt-2 flex items-center justify-between border-t border-gray-150 pt-3">
           <span className="text-[15px] font-bold text-gray-900">Total</span>
-          <span className="text-[22px] font-extrabold text-gray-900">{formatRupiah(grandTotal)}</span>
+          <span className="text-[22px] font-extrabold text-gray-900">{formatRupiah(grandTotal, true)}</span>
         </div>
 
         <div className="mt-3 flex gap-2">
@@ -101,7 +104,7 @@ export function OrderPanel({
         </div>
 
         <Button fullWidth size="lg" disabled={!canCheckout} onClick={onCheckout} className="mt-3 text-base">
-          {`Bayar Sekarang · ${formatRupiah(grandTotal)}`}
+          {`Bayar Sekarang · ${formatRupiah(grandTotal, true)}`}
         </Button>
         <p className="mt-2 text-center text-[11.5px] text-gray-400">F2 cari produk · F9 bayar</p>
       </div>
@@ -109,11 +112,3 @@ export function OrderPanel({
   );
 }
 
-function Row({ label, value, valueClass = 'text-gray-900' }: { label: string; value: string; valueClass?: string }) {
-  return (
-    <div className="flex items-center justify-between py-1 text-[13.5px]">
-      <span className="text-gray-500">{label}</span>
-      <span className={`font-semibold ${valueClass}`}>{value}</span>
-    </div>
-  );
-}
