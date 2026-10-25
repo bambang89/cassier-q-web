@@ -62,6 +62,19 @@
   --color-navy-700: #1a3654;
   --color-rail-muted: #8fa3be;
 
+  /* Landing page (company profile): biru elektrik + hijau tua dari logo. */
+  --color-electric-50: #eef3ff;
+  --color-electric-100: #dbe6ff;
+  --color-electric-400: #6b9bff;
+  --color-electric-500: #3d7bff;
+  --color-electric-600: #2a64e8;
+  --color-electric-700: #1f4fc4;
+  --color-pine-50: #ecf8f3;
+  --color-pine-500: #13946f;
+  --color-pine-600: #0e7a5b;
+  --color-pine-700: #0b6249;
+  --color-night: #07111f;
+
   --color-canvas: #f5f7fb;
   --color-line: #e7ebf1;
   --color-ink: #0f172a;
