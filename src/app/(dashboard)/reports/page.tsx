@@ -2,34 +2,21 @@
 
 import { useEffect, useState } from 'react';
 
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { fetchSalesSummary } from '@/store/slices/reportsSlice';
-import { cn } from '@/lib/cn';
-import { PageBody, PageHeader } from '@/components/layout/PageHeader';
+import { fetchSalesSummary } from '@/lib/store/slices/reportsSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
+import { cn } from '@/utils/cn';
+import { formatShortDate } from '@/utils/date';
+import { PageBody, PageHeader } from '@/components/common/PageHeader';
 import { KpiCard } from '@/components/ui/Display';
 import { LoadingBlock } from '@/components/ui/Spinner';
-import { BarChartIcon, CalendarIcon, ReceiptIcon, RegisterIcon, TrendingIcon, TrophyIcon } from '@/components/icons/LineIcons';
-
-type RangeOption = 7 | 30;
-
-function isoDate(date: Date) {
-  return date.toISOString().slice(0, 10);
-}
-
-function rangeParams(days: RangeOption) {
-  const to = new Date();
-  const from = new Date();
-  from.setDate(from.getDate() - (days - 1));
-  return { from: isoDate(from), to: isoDate(to) };
-}
-
-function prettyDate(iso: string) {
-  return new Date(iso).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
-}
+import { ReceiptIcon, BarChartIcon } from '@/components/ui/icons/NavIcons';
+import { RegisterIcon, TrendingIcon, CalendarIcon, TrophyIcon } from '@/components/ui/icons/DataIcons';
+import type { ReportRange } from '@/features/reports/types';
+import { rangeParams } from '@/features/reports/utils';
 
 export default function ReportsPage() {
   const dispatch = useAppDispatch();
-  const [range, setRange] = useState<RangeOption>(7);
+  const [range, setRange] = useState<ReportRange>(7);
   const summary = useAppSelector((state) => state.reports.summary);
 
   useEffect(() => {
@@ -38,7 +25,7 @@ export default function ReportsPage() {
 
   const switcher = (
     <div className="grid grid-cols-2 gap-1 rounded-lg bg-gray-100 p-1">
-      {([7, 30] as RangeOption[]).map((days) => (
+      {([7, 30] as ReportRange[]).map((days) => (
         <button
           key={days}
           type="button"
@@ -62,7 +49,7 @@ export default function ReportsPage() {
       <PageHeader
         title="Laporan"
         phoneTitle="Laporan Penjualan"
-        subtitle={summary ? `Periode ${prettyDate(summary.from)} — ${prettyDate(summary.to)}` : 'Ringkasan penjualan'}
+        subtitle={summary ? `Periode ${formatShortDate(summary.from)} — ${formatShortDate(summary.to)}` : 'Ringkasan penjualan'}
         right={<span className="hidden tab:block">{switcher}</span>}
       />
       <PageBody className="space-y-4">
@@ -78,7 +65,7 @@ export default function ReportsPage() {
             </div>
 
             <p className="flex items-center gap-1.5 text-sm text-ink-3 tab:hidden">
-              <CalendarIcon size={14} /> Periode: {prettyDate(summary.from)} — {prettyDate(summary.to)}
+              <CalendarIcon size={14} /> Periode: {formatShortDate(summary.from)} — {formatShortDate(summary.to)}
             </p>
 
             <div className="overflow-hidden rounded-2xl border border-line bg-white shadow-card">

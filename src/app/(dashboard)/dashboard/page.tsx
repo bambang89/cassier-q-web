@@ -2,74 +2,19 @@
 
 import { useEffect, useState } from 'react';
 
-import { fetchSalesSummary } from '@/api/reportsApi';
 import type { SalesSummary } from '@/types/models';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { fetchStoreProfile } from '@/store/slices/storeProfileSlice';
-import { cn } from '@/lib/cn';
-import { formatRupiah } from '@/lib/pos';
-import { PageBody, PageHeader } from '@/components/layout/PageHeader';
+import { fetchLastSevenDays } from '@/services/reportsApi';
+import { fetchStoreProfile } from '@/lib/store/slices/storeProfileSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
+import { cn } from '@/utils/cn';
+import { formatRupiah } from '@/utils/format';
+import { todayLabel } from '@/utils/date';
+import { PageBody, PageHeader } from '@/components/common/PageHeader';
 import { Card, KpiCard } from '@/components/ui/Display';
 import { Button } from '@/components/ui/Button';
-import {
-  BarChartIcon,
-  BoxIcon,
-  LightbulbIcon,
-  ReceiptIcon,
-  RegisterIcon,
-  TrendDownIcon,
-  TrendingIcon,
-  TrendUpIcon,
-} from '@/components/icons/LineIcons';
-
-function isoDate(date: Date): string {
-  return date.toISOString().slice(0, 10);
-}
-
-function lastSevenDates(): Date[] {
-  const today = new Date();
-  return Array.from({ length: 7 }, (_, i) => {
-    const date = new Date(today);
-    date.setDate(date.getDate() - (6 - i));
-    return date;
-  });
-}
-
-async function fetchLastSevenDays(): Promise<SalesSummary[]> {
-  return Promise.all(
-    lastSevenDates().map((date) => {
-      const iso = isoDate(date);
-      return fetchSalesSummary({ from: iso, to: iso });
-    }),
-  );
-}
-
-function percentDelta(today: number, yesterday: number): number | null {
-  if (yesterday <= 0) return null;
-  return ((today - yesterday) / yesterday) * 100;
-}
-
-function mergeTopSellers(days: SalesSummary[], limit = 4) {
-  const byProduct = new Map<string, { productId: string; productName: string; totalQuantity: number; totalRevenue: number }>();
-  for (const day of days) {
-    for (const seller of day.topSellers) {
-      const existing = byProduct.get(seller.productId);
-      if (existing) {
-        existing.totalQuantity += seller.totalQuantity;
-        existing.totalRevenue += seller.totalRevenue;
-      } else {
-        byProduct.set(seller.productId, { ...seller });
-      }
-    }
-  }
-  return Array.from(byProduct.values())
-    .sort((a, b) => b.totalQuantity - a.totalQuantity)
-    .slice(0, limit);
-}
-
-function todayLabel(): string {
-  return new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short' });
-}
+import { ReceiptIcon, BoxIcon, BarChartIcon } from '@/components/ui/icons/NavIcons';
+import { RegisterIcon, TrendUpIcon, TrendDownIcon, TrendingIcon, LightbulbIcon } from '@/components/ui/icons/DataIcons';
+import { lastSevenDates, percentDelta, mergeTopSellers } from '@/features/dashboard/utils';
 
 export default function DashboardPage() {
   const dispatch = useAppDispatch();
@@ -110,7 +55,7 @@ export default function DashboardPage() {
   const dayLabels = lastSevenDates().map((d) => d.toLocaleDateString('id-ID', { weekday: 'short' }).replace('.', ''));
 
   const insightText = today
-    ? `Hari ini tercatat ${today.orderCount} transaksi dengan total ${formatRupiah(today.grossSales)}. ${
+    ? `Hari ini tercatat ${today.orderCount} transaksi dengan total ${formatRupiah(today.grossSales, true)}. ${
         weeklyTopSellers.length > 0 ? `${weeklyTopSellers[0].productName} jadi produk terlaris minggu ini.` : ''
       }`
     : '';
@@ -127,7 +72,7 @@ export default function DashboardPage() {
         title={`Selamat datang, ${firstName}`}
         subtitle="Ringkasan performa bisnis hari ini"
         phoneTitle={`Halo, ${firstName} 👋`}
-        phoneSubtitle={`${storeName} · ${todayLabel()}`}
+        phoneSubtitle={`${storeName} · ${todayLabel('short')}`}
         right={<span className="hidden tab:inline-flex">{refresh}</span>}
       />
 
@@ -135,9 +80,9 @@ export default function DashboardPage() {
         {/* Layar lebar: 4 KPI sejajar */}
         <div className="hidden gap-4 tab:grid tab:grid-cols-2 xl:grid-cols-4">
           {[
-            { label: 'Penjualan Hari Ini', value: today ? formatRupiah(today.grossSales) : '—', icon: RegisterIcon, cls: 'bg-success-50 text-success-600', delta: salesDelta },
+            { label: 'Penjualan Hari Ini', value: today ? formatRupiah(today.grossSales, true) : '—', icon: RegisterIcon, cls: 'bg-success-50 text-success-600', delta: salesDelta },
             { label: 'Transaksi', value: today ? String(today.orderCount) : '—', icon: ReceiptIcon, cls: 'bg-primary-50 text-primary-600', delta: orderDelta },
-            { label: 'Rata-rata', value: today ? formatRupiah(avgToday) : '—', icon: TrendingIcon, cls: 'bg-info-50 text-info-700', delta: undefined },
+            { label: 'Rata-rata', value: today ? formatRupiah(avgToday, true) : '—', icon: TrendingIcon, cls: 'bg-info-50 text-info-700', delta: undefined },
             { label: 'Produk Terjual', value: today ? String(todayUnitsSold) : '—', icon: BoxIcon, cls: 'bg-warning-50 text-warning-600', delta: unitsDelta },
           ].map((item, index) => (
             <div key={item.label} className="animate-fade-in" style={{ animationDelay: `${index * 60}ms` }}>
@@ -157,7 +102,7 @@ export default function DashboardPage() {
               </span>
             </div>
             <p className="relative mt-2 truncate text-[32px] leading-10 font-bold text-white">
-              {today ? formatRupiah(today.grossSales) : '—'}
+              {today ? formatRupiah(today.grossSales, true) : '—'}
             </p>
             <div className="relative mt-3 flex items-center justify-between">
               {salesDelta !== null ? (
@@ -173,7 +118,7 @@ export default function DashboardPage() {
               ) : (
                 <span />
               )}
-              <span className="text-[13px] text-white/70">{`Rata-rata ${today ? formatRupiah(avgToday) : '—'}`}</span>
+              <span className="text-[13px] text-white/70">{`Rata-rata ${today ? formatRupiah(avgToday, true) : '—'}`}</span>
             </div>
           </div>
           <div className="flex gap-3">
@@ -240,7 +185,7 @@ export default function DashboardPage() {
                       <p className="truncate text-sm font-semibold text-ink">{seller.productName}</p>
                       <p className="text-[13px] text-ink-3">{seller.totalQuantity}x terjual</p>
                     </div>
-                    <p className="text-sm font-bold text-ink">{formatRupiah(seller.totalRevenue)}</p>
+                    <p className="text-sm font-bold text-ink">{formatRupiah(seller.totalRevenue, true)}</p>
                   </div>
                 ))
               )}
