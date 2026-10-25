@@ -5,6 +5,8 @@ import type { NextConfig } from "next";
 const API_ORIGIN = process.env.CASSIERQ_API_ORIGIN ?? "http://localhost:8080";
 
 const nextConfig: NextConfig = {
+  // Build untuk Docker: .next/standalone berisi server.js + dependensi minimal.
+  output: "standalone",
   devIndicators: false,
   turbopack: {
     rules: {

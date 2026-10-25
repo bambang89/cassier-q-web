@@ -1,0 +1,16 @@
+services:
+  web:
+    image: localhost:5000/cassier-q-web:${IMAGE_TAG:-latest}
+    container_name: cassier-q-web-${COLOR:?COLOR is required, deploy via deploy.sh}
+    restart: always
+    mem_limit: 512m
+    ports:
+      # 3101 = blue, 3102 = green (nginx upstream menunjuk salah satunya)
+      - "127.0.0.1:${HOST_PORT:?HOST_PORT is required}:3000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/login"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 20s
+    stop_grace_period: 20s
