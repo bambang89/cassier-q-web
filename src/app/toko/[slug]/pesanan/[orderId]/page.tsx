@@ -4,12 +4,13 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 
-import { fetchPublicOrder, fetchPublicStorefront } from '@/api/storefrontApi';
 import type { CustomerOrderStatus, PublicOrderStatus } from '@/types/storefront';
-import { cn } from '@/lib/cn';
+import { fetchPublicOrder, fetchPublicStorefront } from '@/services/storefrontApi';
+import { cn } from '@/utils/cn';
+import { formatRupiah } from '@/utils/format';
 import { LoadingBlock } from '@/components/ui/Spinner';
-import { CheckIcon } from '@/components/icons/LineIcons';
-import { rupiah, themeStyle } from '@/features/storefront/StorefrontRenderer';
+import { CheckIcon } from '@/components/ui/icons/ActionIcons';
+import { themeStyle } from '@/features/storefront/utils';
 
 const STEPS: { status: CustomerOrderStatus; label: string }[] = [
   { status: 'NEW', label: 'Pesanan diterima sistem' },
@@ -89,12 +90,12 @@ export default function PublicOrderPage() {
                 {Number(item.quantity)}× {item.productName}
                 {item.notes ? <span className="block text-[12px] text-ink-3">“{item.notes}”</span> : null}
               </span>
-              <span className="font-semibold">{rupiah(item.subtotal)}</span>
+              <span className="font-semibold">{formatRupiah(item.subtotal)}</span>
             </div>
           ))}
           <div className="mt-2 flex justify-between border-t border-gray-100 pt-3">
             <span className="text-ink-2">Total</span>
-            <span className="text-lg font-extrabold">{rupiah(order.subtotal)}</span>
+            <span className="text-lg font-extrabold">{formatRupiah(order.subtotal)}</span>
           </div>
         </div>
         <Link href={tableCode ? `/toko/${slug}/${encodeURIComponent(tableCode)}` : `/toko/${slug}`} className="block text-center font-semibold text-[var(--sf)]">

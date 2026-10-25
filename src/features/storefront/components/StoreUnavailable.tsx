@@ -3,14 +3,14 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-import { fetchStorefrontSettings, saveStorefront } from '@/api/storefrontApi';
-import { apiErrorMessage } from '@/api/errors';
-import { loadTokens } from '@/api/tokenStorage';
 import type { StorefrontSettings } from '@/types/storefront';
-import { defaultLayout } from '@/lib/storefront/blocks';
+import { fetchStorefrontSettings, saveStorefront } from '@/services/storefrontApi';
+import { loadTokens } from '@/services/tokenStorage';
+import { apiErrorMessage } from '@/utils/apiErrors';
 import { Button } from '@/components/ui/Button';
 import { LoadingBlock } from '@/components/ui/Spinner';
-import { StoreIcon } from '@/components/icons/LineIcons';
+import { StoreIcon } from '@/components/ui/icons/NavIcons';
+import { defaultLayout } from '@/features/storefront/utils';
 
 /**
  * Tampil bila /toko/<slug> tidak ditemukan. Pembeli melihat pesan biasa; pemilik toko

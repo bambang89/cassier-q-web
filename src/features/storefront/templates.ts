@@ -1,14 +1,7 @@
 import type { StorefrontLayout } from '@/types/storefront';
-import { DEFAULT_PAGE, THEME_STYLES, createBlock } from './blocks';
-
-export interface StorefrontTemplate {
-  key: string;
-  label: string;
-  emoji: string;
-  description: string;
-  color: string;
-  build: (storeName: string) => StorefrontLayout;
-}
+import { THEME_STYLES, DEFAULT_PAGE } from '@/features/storefront/constants';
+import { createBlock } from '@/features/storefront/utils';
+import type { StorefrontTemplate } from '@/features/storefront/types';
 
 const themeOf = (key: string) => THEME_STYLES.find((t) => t.key === key)!;
 

@@ -2,36 +2,20 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { closestCenter, pointerWithin, useDraggable, useDroppable } from '@dnd-kit/core';
-import type { CollisionDetection } from '@dnd-kit/core';
+import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
 import type { BlockType, PublicStorefront, StorefrontBlock } from '@/types/storefront';
-import { cn } from '@/lib/cn';
-import { BLOCK_DEFS, BLOCK_GROUPS, BLOCK_ORDER, blockLabel } from '@/lib/storefront/blocks';
-import { EyeIcon, EyeOffIcon, LockIcon, SearchIcon, UnlockIcon } from '@/components/icons/LineIcons';
-import { FloatingWhatsapp, StoreFooter, StoreHeader, StorefrontBlockView, StorefrontProvider, blockAnchors } from './StorefrontRenderer';
-
-export const PALETTE_PREFIX = 'palette:';
-export const LAYER_PREFIX = 'layer:';
-
-/**
- * Deteksi tabrakan editor: blok baru dari palet memakai posisi pointer (jatuh tepat di blok
- * yang ditunjuk), urutan di panel Lapisan hanya melawan baris lapisan, dan blok di kanvas
- * hanya melawan blok kanvas.
- */
-export const builderCollision: CollisionDetection = (args) => {
-  const id = String(args.active.id);
-  const containers = args.droppableContainers;
-  if (id.startsWith(PALETTE_PREFIX)) {
-    const hits = pointerWithin({ ...args, droppableContainers: containers.filter((c) => !String(c.id).startsWith(LAYER_PREFIX)) });
-    const block = hits.find((c) => c.id !== 'canvas');
-    return block ? [block] : hits;
-  }
-  if (id.startsWith(LAYER_PREFIX)) return closestCenter({ ...args, droppableContainers: containers.filter((c) => String(c.id).startsWith(LAYER_PREFIX)) });
-  return closestCenter({ ...args, droppableContainers: containers.filter((c) => c.id !== 'canvas' && !String(c.id).startsWith(LAYER_PREFIX)) });
-};
+import { cn } from '@/utils/cn';
+import { SearchIcon, LockIcon, UnlockIcon, EyeIcon, EyeOffIcon } from '@/components/ui/icons/ActionIcons';
+import type { PageSelection } from '@/features/storefront/types';
+import { StorefrontBlockView } from '@/features/storefront/components/StorefrontRenderer';
+import { blockAnchors, blockLabel } from '@/features/storefront/utils';
+import { StoreHeader, StoreFooter, FloatingWhatsapp } from '@/features/storefront/components/renderer/StoreChrome';
+import { StorefrontProvider } from '@/features/storefront/components/StorefrontProvider';
+import { BLOCK_DEFS, BLOCK_ORDER } from '@/features/storefront/blockDefs';
+import { BLOCK_GROUPS, PALETTE_PREFIX, LAYER_PREFIX } from '@/features/storefront/constants';
 
 // ── Palet blok ───────────────────────────────────────────────────────
 
@@ -107,8 +91,6 @@ export function PaletteDragPreview({ type }: { type: BlockType }) {
 }
 
 // ── Kanvas ───────────────────────────────────────────────────────────
-
-export type PageSelection = 'header' | 'footer' | null;
 
 /** Pratinjau toko yang bisa diurutkan & disisipi blok dengan drag & drop. */
 export function BuilderCanvas({

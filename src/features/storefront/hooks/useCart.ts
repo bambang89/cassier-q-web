@@ -3,12 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import type { PublicProduct } from '@/types/storefront';
-
-export interface CartLine {
-  product: PublicProduct;
-  quantity: number;
-  notes?: string;
-}
+import type { CartLine } from '@/features/storefront/types';
 
 const keyFor = (slug: string) => `cassierq.storefront.cart.${slug}`;
 

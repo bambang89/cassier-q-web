@@ -4,19 +4,23 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 
-import { fetchPublicStorefront, placePublicOrder } from '@/api/storefrontApi';
-import { apiErrorMessage } from '@/api/errors';
 import type { Fulfillment, PublicStorefront } from '@/types/storefront';
-import { cn } from '@/lib/cn';
+import { fetchPublicStorefront, placePublicOrder } from '@/services/storefrontApi';
+import { apiErrorMessage } from '@/utils/apiErrors';
+import { cn } from '@/utils/cn';
+import { formatRupiah } from '@/utils/format';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { FormControl, Input, Select, TextArea } from '@/components/ui/Field';
 import { LoadingBlock } from '@/components/ui/Spinner';
-import { CartIcon, ChevronRightIcon } from '@/components/icons/LineIcons';
-import { resolvePage, resolveTable, resolveTheme } from '@/lib/storefront/blocks';
-import { FloatingWhatsapp, StoreFooter, StoreHeader, StorefrontProvider, StorefrontRenderer, rupiah, themeStyle } from '@/features/storefront/StorefrontRenderer';
-import { StoreUnavailable } from '@/features/storefront/StoreUnavailable';
-import { useCart } from '@/features/storefront/useCart';
+import { CartIcon } from '@/components/ui/icons/NavIcons';
+import { ChevronRightIcon } from '@/components/ui/icons/ActionIcons';
+import { StorefrontRenderer } from '@/features/storefront/components/StorefrontRenderer';
+import { StoreUnavailable } from '@/features/storefront/components/StoreUnavailable';
+import { useCart } from '@/features/storefront/hooks/useCart';
+import { themeStyle, resolveTheme, resolvePage, resolveTable } from '@/features/storefront/utils';
+import { StoreHeader, StoreFooter, FloatingWhatsapp } from '@/features/storefront/components/renderer/StoreChrome';
+import { StorefrontProvider } from '@/features/storefront/components/StorefrontProvider';
 
 const FULFILLMENTS: { value: Fulfillment; label: string; hint: string }[] = [
   { value: 'PICKUP', label: 'Ambil di toko', hint: 'Datang & ambil sendiri' },
@@ -171,8 +175,8 @@ export function PublicStorePage({ tableCode }: { tableCode?: string }) {
               <CartIcon size={20} />
             </span>
             <span className="flex-1">
-              <span className="block text-[12px] text-white/80">{cart.count} item{belowMinimum ? ` · min. ${rupiah(page.minOrder)}` : ''}</span>
-              <span className="block text-lg font-bold">{rupiah(cart.total)}</span>
+              <span className="block text-[12px] text-white/80">{cart.count} item{belowMinimum ? ` · min. ${formatRupiah(page.minOrder)}` : ''}</span>
+              <span className="block text-lg font-bold">{formatRupiah(cart.total)}</span>
             </span>
             <span className="flex items-center gap-1 rounded-[var(--sf-btn-radius)] bg-white/20 px-3 py-2 text-sm font-bold">
               Pesan <ChevronRightIcon size={16} />
@@ -194,7 +198,7 @@ export function PublicStorePage({ tableCode }: { tableCode?: string }) {
                       <div className="flex items-center gap-3">
                         <div className="min-w-0 flex-1">
                           <p className="truncate font-semibold text-ink">{line.product.name}</p>
-                          <p className="text-sm text-ink-3">{rupiah(line.product.price)}</p>
+                          <p className="text-sm text-ink-3">{formatRupiah(line.product.price)}</p>
                         </div>
                         <div className="flex items-center gap-1">
                           <button type="button" onClick={() => cart.setQuantity(line.product.id, line.quantity - 1)} className="size-8 cursor-pointer rounded-full border border-gray-200 font-bold">
@@ -218,7 +222,7 @@ export function PublicStorePage({ tableCode }: { tableCode?: string }) {
                 </div>
                 <div className="mt-3 flex items-center justify-between border-t border-gray-100 pt-3">
                   <span className="text-ink-2">Total</span>
-                  <span className="text-xl font-extrabold text-ink">{rupiah(cart.total)}</span>
+                  <span className="text-xl font-extrabold text-ink">{formatRupiah(cart.total)}</span>
                 </div>
                 <button
                   type="button"
@@ -285,7 +289,7 @@ export function PublicStorePage({ tableCode }: { tableCode?: string }) {
               </FormControl>
               <div className="mb-4 flex items-center justify-between rounded-xl bg-gray-50 p-3">
                 <span className="text-sm text-ink-2">{cart.count} item</span>
-                <span className="text-lg font-extrabold">{rupiah(cart.total)}</span>
+                <span className="text-lg font-extrabold">{formatRupiah(cart.total)}</span>
               </div>
               {submitError ? <p className="mb-3 rounded-lg bg-error-50 p-3 text-sm text-error-600">{submitError}</p> : null}
               <div className="flex gap-2">
@@ -297,10 +301,10 @@ export function PublicStorePage({ tableCode }: { tableCode?: string }) {
                   disabled={!canSubmit || submitting}
                   className="flex-1 cursor-pointer rounded-xl bg-[var(--sf)] py-3 font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {submitting ? 'Mengirim…' : `Kirim Pesanan · ${rupiah(cart.total)}`}
+                  {submitting ? 'Mengirim…' : `Kirim Pesanan · ${formatRupiah(cart.total)}`}
                 </button>
               </div>
-              {belowMinimum ? <p className="mt-3 rounded-lg bg-warning-50 p-2.5 text-center text-[12.5px] text-warning-700">Minimal belanja {rupiah(page.minOrder)} — tambah {rupiah(page.minOrder - cart.total)} lagi.</p> : null}
+              {belowMinimum ? <p className="mt-3 rounded-lg bg-warning-50 p-2.5 text-center text-[12.5px] text-warning-700">Minimal belanja {formatRupiah(page.minOrder)} — tambah {formatRupiah(page.minOrder - cart.total)} lagi.</p> : null}
               {page.checkoutNote ? <p className="mt-3 text-center text-[12px] text-ink-3">{page.checkoutNote}</p> : null}
             </form>
           )}

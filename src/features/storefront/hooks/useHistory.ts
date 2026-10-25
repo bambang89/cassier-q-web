@@ -2,21 +2,17 @@
 
 import { useCallback, useRef, useState } from 'react';
 
+import type { EditorHistoryState } from '@/features/storefront/types';
+
 const LIMIT = 80;
 const COALESCE_MS = 700;
-
-interface HistoryState<T> {
-  past: T[];
-  present: T;
-  future: T[];
-}
 
 /**
  * State editor dengan Undo/Redo. Perubahan beruntun dengan `key` yang sama
  * (mis. mengetik di satu isian) digabung jadi satu langkah undo.
  */
 export function useHistory<T>(initial: T) {
-  const [state, setState] = useState<HistoryState<T>>({ past: [], present: initial, future: [] });
+  const [state, setState] = useState<EditorHistoryState<T>>({ past: [], present: initial, future: [] });
   const last = useRef<{ key: string | null; at: number }>({ key: null, at: 0 });
 
   const set = useCallback((updater: T | ((prev: T) => T), key?: string) => {

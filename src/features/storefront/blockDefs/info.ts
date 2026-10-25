@@ -1,0 +1,137 @@
+import type { BlockType } from '@/types/storefront';
+import type { BlockDef } from '@/features/storefront/types';
+import { LINK_HELP, HEIGHTS, SOCIAL_PLATFORMS, uid } from '@/features/storefront/blockDefs/shared';
+
+export const INFO_BLOCKS: Pick<Record<BlockType, BlockDef>, 'countdown' | 'hours' | 'info' | 'map' | 'social' | 'spacer' | 'divider'> = {
+  countdown: {
+    type: 'countdown',
+    group: 'info',
+    label: 'Hitung Mundur',
+    description: 'Waktu tersisa promo / acara',
+    emoji: '⏳',
+    defaults: { title: 'Promo berakhir dalam', subtitle: '', endsAt: '', expiredText: 'Promo telah berakhir', buttonText: '', link: '#produk' },
+    fields: [
+      { key: 'title', label: 'Judul', kind: 'text' },
+      { key: 'subtitle', label: 'Keterangan', kind: 'text' },
+      { key: 'endsAt', label: 'Berakhir pada', kind: 'datetime' },
+      { key: 'expiredText', label: 'Teks setelah berakhir', kind: 'text' },
+      { key: 'buttonText', label: 'Teks tombol', kind: 'text' },
+      { key: 'link', label: 'Tautan tombol', kind: 'url', help: LINK_HELP, showIf: (p) => !!p.buttonText },
+    ],
+  },
+  hours: {
+    type: 'hours',
+    group: 'info',
+    label: 'Jam Buka',
+    description: 'Tabel jam operasional per hari',
+    emoji: '🕘',
+    defaults: {
+      title: 'Jam Buka',
+      items: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'].map((day) => ({ id: uid(), day, time: '08.00 – 21.00' })),
+      note: '',
+      highlightToday: true,
+    },
+    fields: [
+      { key: 'title', label: 'Judul', kind: 'text' },
+      {
+        key: 'items',
+        label: 'Hari',
+        kind: 'list',
+        itemLabel: 'Baris',
+        titleKey: 'day',
+        max: 14,
+        newItem: () => ({ id: uid(), day: 'Hari libur nasional', time: 'Tutup' }),
+        itemFields: [
+          { key: 'day', label: 'Hari', kind: 'text' },
+          { key: 'time', label: 'Jam', kind: 'text', placeholder: 'mis. 08.00 – 21.00 / Tutup' },
+        ],
+      },
+      { key: 'note', label: 'Catatan', kind: 'text' },
+      { key: 'highlightToday', label: 'Tandai hari ini', kind: 'toggle' },
+    ],
+  },
+  info: {
+    type: 'info',
+    group: 'info',
+    label: 'Info & Kontak',
+    description: 'Alamat, jam buka, WhatsApp, peta',
+    emoji: '📍',
+    defaults: { title: 'Kunjungi Kami', hours: 'Setiap hari, 08.00–21.00', whatsapp: '', mapsUrl: '', showAddress: true, showPhone: true },
+    fields: [
+      { key: 'title', label: 'Judul', kind: 'text' },
+      { key: 'hours', label: 'Jam buka', kind: 'text' },
+      { key: 'whatsapp', label: 'No. WhatsApp', kind: 'text', placeholder: 'mis. 081234567890' },
+      { key: 'mapsUrl', label: 'Link Google Maps', kind: 'url' },
+      { key: 'showAddress', label: 'Tampilkan alamat toko', kind: 'toggle' },
+      { key: 'showPhone', label: 'Tampilkan telepon toko', kind: 'toggle' },
+    ],
+  },
+  map: {
+    type: 'map',
+    group: 'info',
+    label: 'Peta Lokasi',
+    description: 'Peta Google Maps tertanam',
+    emoji: '🗺️',
+    defaults: { title: 'Lokasi Kami', query: '', height: 'md' },
+    fields: [
+      { key: 'title', label: 'Judul', kind: 'text' },
+      { key: 'query', label: 'Alamat / nama tempat', kind: 'text', help: 'Kosongkan untuk memakai alamat toko.' },
+      { key: 'height', label: 'Tinggi', kind: 'select', segmented: true, options: HEIGHTS.slice(0, 3) },
+    ],
+  },
+  social: {
+    type: 'social',
+    group: 'info',
+    label: 'Media Sosial',
+    description: 'Tautan Instagram, TikTok, marketplace',
+    emoji: '🔗',
+    defaults: {
+      title: 'Ikuti Kami',
+      items: [
+        { id: uid(), platform: 'instagram', url: '' },
+        { id: uid(), platform: 'tiktok', url: '' },
+      ],
+      display: 'buttons',
+    },
+    fields: [
+      { key: 'title', label: 'Judul', kind: 'text' },
+      {
+        key: 'items',
+        label: 'Tautan',
+        kind: 'list',
+        itemLabel: 'Tautan',
+        titleKey: 'platform',
+        max: 12,
+        newItem: () => ({ id: uid(), platform: 'website', url: '' }),
+        itemFields: [
+          { key: 'platform', label: 'Platform', kind: 'select', options: SOCIAL_PLATFORMS.map((p) => ({ value: p.value, label: `${p.emoji} ${p.label}` })) },
+          { key: 'url', label: 'Link / username', kind: 'url' },
+        ],
+      },
+      { key: 'display', label: 'Tampilan', kind: 'select', segmented: true, options: [{ value: 'buttons', label: 'Tombol' }, { value: 'icons', label: 'Ikon' }] },
+    ],
+  },
+  spacer: {
+    type: 'spacer',
+    group: 'tata',
+    label: 'Jarak Kosong',
+    description: 'Ruang kosong antar blok',
+    emoji: '↕️',
+    defaults: { height: 32 },
+    style: { paddingY: 'none' },
+    fields: [{ key: 'height', label: 'Tinggi', kind: 'range', min: 8, max: 200, step: 4, suffix: 'px' }],
+  },
+  divider: {
+    type: 'divider',
+    group: 'tata',
+    label: 'Garis Pemisah',
+    description: 'Garis tipis antar bagian',
+    emoji: '➖',
+    defaults: { lineStyle: 'solid', thickness: 1, width: 'full' },
+    fields: [
+      { key: 'lineStyle', label: 'Jenis garis', kind: 'select', segmented: true, options: [{ value: 'solid', label: 'Lurus' }, { value: 'dashed', label: 'Putus' }, { value: 'dotted', label: 'Titik' }] },
+      { key: 'thickness', label: 'Tebal', kind: 'range', min: 1, max: 6, suffix: 'px' },
+      { key: 'width', label: 'Panjang', kind: 'select', segmented: true, options: [{ value: 'short', label: 'Pendek' }, { value: 'half', label: 'Setengah' }, { value: 'full', label: 'Penuh' }] },
+    ],
+  },
+};

@@ -1,0 +1,90 @@
+import type { BlockType } from '@/types/storefront';
+import type { BlockDef } from '@/features/storefront/types';
+import { LINK_HELP, HEIGHTS, uid } from '@/features/storefront/blockDefs/shared';
+
+export const BANNER_BLOCKS: Pick<Record<BlockType, BlockDef>, 'hero' | 'slideshow' | 'announcement'> = {
+  hero: {
+    type: 'hero',
+    group: 'utama',
+    label: 'Banner Utama',
+    description: 'Judul besar, ajakan, dan gambar latar',
+    emoji: '🖼️',
+    defaults: {
+      badge: '',
+      title: 'Selamat datang!',
+      subtitle: 'Pesan online, ambil tanpa antre.',
+      imageUrl: '',
+      buttonText: 'Lihat Menu',
+      buttonLink: '#produk',
+      button2Text: '',
+      button2Link: '',
+      align: 'left',
+      height: 'md',
+      overlay: 55,
+    },
+    fields: [
+      { key: 'badge', label: 'Label kecil', kind: 'text', placeholder: 'mis. Baru buka!' },
+      { key: 'title', label: 'Judul', kind: 'text' },
+      { key: 'subtitle', label: 'Subjudul', kind: 'textarea' },
+      { key: 'imageUrl', label: 'Gambar latar', kind: 'image' },
+      { key: 'overlay', label: 'Gelapkan gambar', kind: 'range', min: 0, max: 90, step: 5, suffix: '%', showIf: (p) => !!p.imageUrl },
+      { key: 'buttonText', label: 'Teks tombol utama', kind: 'text', placeholder: 'Kosongkan bila tanpa tombol' },
+      { key: 'buttonLink', label: 'Tautan tombol utama', kind: 'url', help: LINK_HELP, showIf: (p) => !!p.buttonText },
+      { key: 'button2Text', label: 'Teks tombol kedua', kind: 'text', placeholder: 'Opsional' },
+      { key: 'button2Link', label: 'Tautan tombol kedua', kind: 'url', help: LINK_HELP, showIf: (p) => !!p.button2Text },
+      { key: 'align', label: 'Posisi teks', kind: 'select', segmented: true, options: [{ value: 'left', label: 'Kiri' }, { value: 'center', label: 'Tengah' }] },
+      { key: 'height', label: 'Tinggi banner', kind: 'select', segmented: true, options: HEIGHTS },
+    ],
+  },
+  slideshow: {
+    type: 'slideshow',
+    group: 'utama',
+    label: 'Slide Promo',
+    description: 'Beberapa banner bergeser otomatis',
+    emoji: '🎞️',
+    defaults: {
+      items: [
+        { id: uid(), imageUrl: '', title: 'Promo Spesial', subtitle: 'Diskon untuk menu pilihan', buttonText: 'Pesan', link: '#produk' },
+        { id: uid(), imageUrl: '', title: 'Menu Baru', subtitle: 'Coba rasa terbaru kami', buttonText: '', link: '' },
+      ],
+      interval: 5,
+      height: 'md',
+      showDots: true,
+    },
+    fields: [
+      {
+        key: 'items',
+        label: 'Slide',
+        kind: 'list',
+        itemLabel: 'Slide',
+        titleKey: 'title',
+        max: 8,
+        newItem: () => ({ id: uid(), imageUrl: '', title: 'Slide baru', subtitle: '', buttonText: '', link: '' }),
+        itemFields: [
+          { key: 'imageUrl', label: 'Gambar', kind: 'image' },
+          { key: 'title', label: 'Judul', kind: 'text' },
+          { key: 'subtitle', label: 'Subjudul', kind: 'text' },
+          { key: 'buttonText', label: 'Teks tombol', kind: 'text' },
+          { key: 'link', label: 'Tautan', kind: 'url' },
+        ],
+      },
+      { key: 'interval', label: 'Ganti otomatis tiap', kind: 'number', min: 0, max: 30, suffix: 'detik (0 = manual)' },
+      { key: 'height', label: 'Tinggi', kind: 'select', segmented: true, options: HEIGHTS.slice(0, 3) },
+      { key: 'showDots', label: 'Tampilkan titik navigasi', kind: 'toggle' },
+    ],
+  },
+  announcement: {
+    type: 'announcement',
+    group: 'utama',
+    label: 'Pengumuman',
+    description: 'Pita info singkat, mis. promo hari ini',
+    emoji: '📣',
+    defaults: { icon: '🎉', text: 'Gratis ongkir untuk pembelian di atas Rp100.000!', link: '', marquee: false },
+    fields: [
+      { key: 'icon', label: 'Ikon', kind: 'emoji' },
+      { key: 'text', label: 'Teks pengumuman', kind: 'text' },
+      { key: 'link', label: 'Tautan (opsional)', kind: 'url', help: LINK_HELP },
+      { key: 'marquee', label: 'Teks berjalan', kind: 'toggle' },
+    ],
+  },
+};
