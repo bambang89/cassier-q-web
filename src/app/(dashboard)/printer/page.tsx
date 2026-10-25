@@ -3,12 +3,12 @@
 import { useEffect, useState } from 'react';
 
 import { getPaperWidth, savePaperWidth } from '@/services/printing/settings';
-import type { PaperWidth } from '@/services/printing/settings';
-import { useAppSelector } from '@/store/hooks';
-import { PageBody, PageHeader } from '@/components/layout/PageHeader';
+import type { PaperWidth } from '@/services/printing/types';
+import { useAppSelector } from '@/hooks/store';
+import { PageBody, PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/ui/Button';
-import { CheckIcon, PrintIcon } from '@/components/icons/LineIcons';
-import { PaperWidthPicker } from '@/features/orders/PaperWidthPicker';
+import { CheckIcon, PrintIcon } from '@/components/ui/icons/ActionIcons';
+import { PaperWidthPicker } from '@/features/orders/components/PaperWidthPicker';
 
 const TIPS = [
   'Jadikan printer struk (thermal/USB/Bluetooth yang sudah terpasang di komputer) sebagai printer default sistem.',

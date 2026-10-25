@@ -8,3 +8,12 @@ export interface ReceiptPrinter {
   readonly label: string;
   print(receipt: Receipt): Promise<void>;
 }
+
+export interface StoredPrinterConfig {
+  type: Extract<PrinterType, 'THERMAL' | 'DOT_MATRIX'>;
+  deviceName: string;
+  deviceAddress: string;
+}
+
+/** Receipt paper width in mm. 58mm = small thermal printers, 80mm = standard POS printers. */
+export type PaperWidth = 58 | 80;

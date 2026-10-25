@@ -1,14 +1,7 @@
+import type { StoredPrinterConfig, PaperWidth } from '@/services/printing/types';
 import * as SecureStore from '@/lib/secureStore';
 
-import type { PrinterType } from './types';
-
 const STORAGE_KEY = 'cassierq.printer.config';
-
-export interface StoredPrinterConfig {
-  type: Extract<PrinterType, 'THERMAL' | 'DOT_MATRIX'>;
-  deviceName: string;
-  deviceAddress: string;
-}
 
 /** Reads the saved printer (type, name, address); returns null if none or if the stored value is corrupt. */
 export async function getPrinterConfig(): Promise<StoredPrinterConfig | null> {
@@ -32,9 +25,6 @@ export async function clearPrinterConfig(): Promise<void> {
 }
 
 const PAPER_WIDTH_KEY = 'cassierq.printer.paperWidth';
-
-/** Receipt paper width in mm. 58mm = small thermal printers, 80mm = standard POS printers. */
-export type PaperWidth = 58 | 80;
 
 export const PAPER_WIDTHS: PaperWidth[] = [58, 80];
 
