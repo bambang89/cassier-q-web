@@ -1,0 +1,191 @@
+@import "tailwindcss";
+
+/* Palet & ukuran disalin dari cassier-Q-rn/src/theme (colors.ts, tabletColors.ts,
+   radii.ts, shadows.ts) — sumber yang sama dengan mockup cassier-q-webapp. */
+@theme {
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+
+  --breakpoint-tab: 740px;
+
+  --color-primary-50: #eff4ff;
+  --color-primary-100: #dce7fe;
+  --color-primary-200: #bfd3fe;
+  --color-primary-300: #93b4fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+
+  --color-gray-25: #f7f9fc;
+  --color-gray-50: #f8fafc;
+  --color-gray-100: #eef1f5;
+  --color-gray-150: #e7ebf1;
+  --color-gray-200: #e2e8f0;
+  --color-gray-300: #cbd5e1;
+  --color-gray-400: #94a3b8;
+  --color-gray-500: #64748b;
+  --color-gray-600: #475569;
+  --color-gray-700: #334155;
+  --color-gray-800: #1e293b;
+  --color-gray-900: #0f172a;
+
+  --color-success-50: #ecfdf5;
+  --color-success-100: #d1fae5;
+  --color-success-200: #a7f3d0;
+  --color-success-500: #10b981;
+  --color-success-600: #059669;
+  --color-success-700: #047857;
+
+  --color-warning-50: #fffbeb;
+  --color-warning-100: #fef3c7;
+  --color-warning-200: #fde68a;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706;
+  --color-warning-700: #b45309;
+
+  --color-error-50: #fef2f2;
+  --color-error-100: #fee2e2;
+  --color-error-200: #fecaca;
+  --color-error-500: #ef4444;
+  --color-error-600: #dc2626;
+  --color-error-700: #b91c1c;
+
+  --color-info-50: #f0fdfa;
+  --color-info-100: #ccfbf1;
+  --color-info-600: #0d9488;
+  --color-info-700: #0f766e;
+
+  --color-navy-900: #0b1f33;
+  --color-navy-800: #122a44;
+  --color-navy-700: #1a3654;
+  --color-rail-muted: #8fa3be;
+
+  --color-canvas: #f5f7fb;
+  --color-line: #e7ebf1;
+  --color-ink: #0f172a;
+  --color-ink-2: #475569;
+  --color-ink-3: #64748b;
+
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+
+  --shadow-card: 0 1px 10px rgb(11 31 51 / 0.06);
+  --shadow-sm: 0 1px 2px rgb(11 31 51 / 0.05);
+  --shadow-md: 0 2px 6px rgb(11 31 51 / 0.06);
+  --shadow-lg: 0 8px 28px rgb(11 31 51 / 0.14);
+  --shadow-float: 0 6px 18px rgb(11 31 51 / 0.22);
+  --shadow-rail: 0 4px 10px rgb(37 99 235 / 0.45);
+
+  --animate-fade-in: fade-in 0.28s ease-out both;
+  --animate-slide-in: slide-in 0.32s ease-out both;
+  --animate-pop-in: pop-in 0.22s ease-out both;
+  --animate-sheet-up: sheet-up 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-marquee: marquee 18s linear infinite;
+  --animate-drop-pulse: drop-pulse 1s ease-in-out infinite;
+  --animate-block-in: block-in 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes slide-in {
+    from { opacity: 0; transform: translateX(18px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes pop-in {
+    from { opacity: 0; transform: scale(0.94); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes sheet-up {
+    from { transform: translateY(60%); }
+    to { transform: none; }
+  }
+  @keyframes drop-pulse {
+    0%, 100% { opacity: 1; transform: scaleX(1); }
+    50% { opacity: 0.55; transform: scaleX(0.97); }
+  }
+  @keyframes block-in {
+    from { opacity: 0; transform: translateY(14px) scale(0.985); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar tipis supaya daftar panjang tetap rapi seperti di tablet. */
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gray-300) transparent;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Struk: hanya area .print-area yang ikut dicetak. */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+  .print-area {
+    position: fixed;
+    inset: 0 auto auto 0;
+    width: 100%;
+    max-width: none !important;
+  }
+}
+
+@keyframes reveal-x {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+/* Toko online: judul memakai font judul dari tema toko. */
+.sf-heading {
+  font-family: var(--sf-heading-font);
+  letter-spacing: -0.01em;
+}
+
+/* Toko online: blok muncul halus saat masuk layar (lihat useReveal). */
+.sf-reveal {
+  transition: opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.sf-reveal[data-shown='false'] {
+  opacity: 0;
+  transform: translateY(24px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .sf-reveal,
+  .sf-reveal[data-shown='false'] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

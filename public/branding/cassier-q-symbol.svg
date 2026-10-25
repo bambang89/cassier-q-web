@@ -1,0 +1,17 @@
+<svg width="1000" height="1000" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="ringG1" x1="20" y1="10" x2="180" y2="190" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0B1F3A"/>
+      <stop offset="55%" stop-color="#1450C4"/>
+      <stop offset="100%" stop-color="#0E7A5B"/>
+    </linearGradient>
+    <linearGradient id="diaG1" x1="55" y1="55" x2="145" y2="145" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1450C4"/>
+      <stop offset="100%" stop-color="#0B1F3A"/>
+    </linearGradient>
+  </defs>
+  <path d="M 86.14,33 Q100,25 113.86,33 L151.14,54.5 Q165,62.5 165,78.5 L165,121.5 Q165,137.5 151.14,145.5 L113.86,167 Q100,175 86.14,167 L48.86,145.5 Q35,137.5 35,121.5 L35,78.5 Q35,62.5 48.86,54.5 Z" fill="none" stroke="url(#ringG1)" stroke-width="13" stroke-linejoin="round"/>
+  <path d="M93.64,66.36 Q100,60 106.36,66.36 L133.64,93.64 Q140,100 133.64,106.36 L106.36,133.64 Q100,140 93.64,133.64 L66.36,106.36 Q60,100 66.36,93.64 Z" fill="url(#diaG1)"/>
+  <line x1="133" y1="107" x2="177" y2="151" stroke="url(#ringG1)" stroke-width="13" stroke-linecap="round"/>
+  <circle cx="180.5" cy="154.5" r="12.5" fill="#0E7A5B"/>
+</svg>

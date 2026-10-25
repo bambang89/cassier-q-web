@@ -1,0 +1,95 @@
+import { apiClient } from './client';
+import { clearTokens, loadTokens, saveTokens, type TokenSet } from './tokenStorage';
+import type { AuthResponse, User } from '@/types/models';
+import { setActiveStore } from './storeContext';
+
+async function persistAuthResponse(data: AuthResponse): Promise<TokenSet> {
+  const tokens: TokenSet = {
+    accessToken: data.accessToken,
+    refreshToken: data.refreshToken,
+    expiresAt: data.expiresAt,
+  };
+  await saveTokens(tokens);
+  return tokens;
+}
+
+export async function login(username: string, password: string): Promise<User> {
+  const { data } = await apiClient.post<AuthResponse>('/auth/login', { username, password });
+  await persistAuthResponse(data);
+  return data.user;
+}
+
+export interface RegisterPayload {
+  storeCode: string;
+  storeName: string;
+  username: string;
+  name: string;
+  email: string;
+  password: string;
+  /** Opsional — bisa dilengkapi belakangan di menu Outlet. */
+  address?: string;
+  city?: string;
+  phone?: string;
+}
+
+export async function register(payload: RegisterPayload): Promise<User> {
+  const { data } = await apiClient.post<AuthResponse>('/auth/register', payload);
+  await persistAuthResponse(data);
+  return data.user;
+}
+
+export async function logout(): Promise<void> {
+  try {
+    const tokens = await loadTokens();
+    if (tokens?.refreshToken) {
+      await apiClient.post('/auth/logout', { refreshToken: tokens.refreshToken });
+    }
+  } finally {
+    await clearTokens();
+    await setActiveStore(null);
+  }
+}
+
+export async function logoutAll(): Promise<void> {
+  try {
+    await apiClient.post('/auth/logout-all');
+  } finally {
+    await clearTokens();
+    await setActiveStore(null);
+  }
+}
+
+export async function revokeUserSessions(userId: string): Promise<void> {
+  await apiClient.post(`/auth/revoke/${userId}`);
+}
+
+export async function fetchCurrentUser(): Promise<User> {
+  const { data } = await apiClient.get<User>('/auth/me');
+  return data;
+}
+
+export async function forgotPassword(username: string): Promise<void> {
+  await apiClient.post('/auth/forgot-password', { username });
+}
+
+export async function resetPassword(token: string, newPassword: string): Promise<void> {
+  await apiClient.post('/auth/reset-password', { token, newPassword });
+}
+
+export async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
+  await apiClient.post('/auth/change-password', { currentPassword, newPassword });
+}
+
+/** Upload/ganti foto profil (khusus Kepala Toko). */
+export async function uploadAvatar(file: File): Promise<User> {
+  const formData = new FormData();
+  formData.append('file', file);
+  const { data } = await apiClient.post<User>('/auth/me/avatar', formData);
+  return data;
+}
+
+/** Hapus foto profil (khusus Kepala Toko). */
+export async function removeAvatar(): Promise<User> {
+  const { data } = await apiClient.delete<User>('/auth/me/avatar');
+  return data;
+}
