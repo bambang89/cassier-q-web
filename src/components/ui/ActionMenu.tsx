@@ -2,14 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-import { cn } from '@/lib/cn';
-import { MoreIcon } from '@/components/icons/LineIcons';
-
-export interface MenuAction {
-  label: string;
-  onSelect: () => void;
-  destructive?: boolean;
-}
+import type { MenuAction } from '@/types/ui';
+import { cn } from '@/utils/cn';
+import { MoreIcon } from '@/components/ui/icons/ActionIcons';
 
 /** Tombol ⋯ dengan daftar aksi — pengganti swipe action di aplikasi mobile. */
 export function ActionMenu({ actions, className }: { actions: MenuAction[]; className?: string }) {

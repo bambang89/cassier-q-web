@@ -2,24 +2,14 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-import { fetchProductByBarcode } from '@/api/productsApi';
 import type { Product } from '@/types/models';
+import { fetchProductByBarcode } from '@/services/productsApi';
 import { Alert } from '@/lib/alert';
+import { detectorCtor } from '@/utils/barcode';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Field';
-import { BarcodeIcon } from '@/components/icons/LineIcons';
-
-// BarcodeDetector belum ada di lib.dom TypeScript.
-type DetectedBarcode = { rawValue: string };
-type BarcodeDetectorLike = { detect: (source: CanvasImageSource) => Promise<DetectedBarcode[]> };
-type BarcodeDetectorCtor = new (options?: { formats?: string[] }) => BarcodeDetectorLike;
-
-function detectorCtor(): BarcodeDetectorCtor | null {
-  return typeof window !== 'undefined' && 'BarcodeDetector' in window
-    ? ((window as unknown as { BarcodeDetector: BarcodeDetectorCtor }).BarcodeDetector)
-    : null;
-}
+import { BarcodeIcon } from '@/components/ui/icons/ActionIcons';
 
 /**
  * Padanan ScannerScreen mobile. Kamera + BarcodeDetector (Chrome/Edge/Android)

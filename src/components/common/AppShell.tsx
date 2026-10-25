@@ -4,11 +4,12 @@ import { useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { fetchMyMenus, restoreActiveStore } from '@/store/slices/accessSlice';
-import { FullScreenLoader, useAuthBootstrap } from './AuthBootstrap';
-import { PhoneTabBar } from './PhoneTabBar';
-import { Sidebar } from './Sidebar';
+import { fetchMyMenus, restoreActiveStore } from '@/lib/store/slices/accessSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
+import { useAuthBootstrap } from '@/hooks/useAuthBootstrap';
+import { FullScreenLoader } from '@/components/common/AuthBootstrap';
+import { PhoneTabBar } from '@/components/common/PhoneTabBar';
+import { Sidebar } from '@/components/common/Sidebar';
 
 /**
  * Kerangka semua halaman setelah login: sidebar (layar lebar) atau bottom tab

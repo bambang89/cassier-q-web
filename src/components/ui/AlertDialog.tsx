@@ -1,19 +1,8 @@
 'use client';
 
-import { Button } from './Button';
-import { Modal } from './Modal';
-
-export interface AlertDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title: string;
-  description?: string;
-  confirmText?: string;
-  cancelText?: string;
-  onConfirm?: () => void;
-  isDanger?: boolean;
-  isConfirmLoading?: boolean;
-}
+import type { AlertDialogProps } from '@/types/ui';
+import { Button } from '@/components/ui/Button';
+import { Modal } from '@/components/ui/Modal';
 
 export function AlertDialog({
   isOpen,

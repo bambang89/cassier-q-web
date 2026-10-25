@@ -1,20 +1,14 @@
 'use client';
 
 import { forwardRef, useState } from 'react';
-import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from 'react';
+import type { ReactNode, TextareaHTMLAttributes } from 'react';
 
-import { cn } from '@/lib/cn';
-import { EyeIcon, EyeOffIcon } from '@/components/icons/LineIcons';
+import type { InputProps, SelectProps, FormControlProps } from '@/types/ui';
+import { cn } from '@/utils/cn';
+import { EyeIcon, EyeOffIcon } from '@/components/ui/icons/ActionIcons';
 
 const FIELD_BASE =
   'flex min-h-[50px] items-center gap-1.5 rounded-md border-[1.5px] border-gray-300 bg-white px-3 shadow-md transition focus-within:border-2 focus-within:border-primary-600';
-
-export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  isInvalid?: boolean;
-  leftElement?: ReactNode;
-  rightElement?: ReactNode;
-  wrapperClassName?: string;
-}
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   { isInvalid, leftElement, rightElement, className, wrapperClassName, disabled, ...rest },
@@ -81,20 +75,6 @@ export function TextArea({
   );
 }
 
-export interface SelectOption<T extends string = string> {
-  label: string;
-  value: T;
-}
-
-export interface SelectProps<T extends string = string>
-  extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'value' | 'onChange'> {
-  value: T | null;
-  onChange: (value: T) => void;
-  options: SelectOption<T>[];
-  placeholder?: string;
-  isInvalid?: boolean;
-}
-
 export function Select<T extends string = string>({
   value,
   onChange,
@@ -129,16 +109,6 @@ export function Select<T extends string = string>({
       <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-sm text-ink-3">▾</span>
     </div>
   );
-}
-
-export interface FormControlProps {
-  label?: string;
-  helperText?: string;
-  errorText?: string;
-  isInvalid?: boolean;
-  isRequired?: boolean;
-  className?: string;
-  children: ReactNode;
 }
 
 export function FormControl({ label, helperText, errorText, isInvalid, isRequired, className, children }: FormControlProps) {

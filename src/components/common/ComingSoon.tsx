@@ -2,8 +2,8 @@
 
 import type { ComponentType } from 'react';
 
-import type { LineIconProps } from '@/components/icons/LineIcons';
-import { PageBody, PageHeader } from './PageHeader';
+import type { LineIconProps } from '@/types/ui';
+import { PageBody, PageHeader } from '@/components/common/PageHeader';
 
 /** Layar yang di aplikasi mobile juga masih "Segera Hadir". */
 export function ComingSoon({

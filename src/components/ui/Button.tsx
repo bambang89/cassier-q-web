@@ -1,10 +1,8 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import type { ButtonHTMLAttributes } from 'react';
 
-import { cn } from '@/lib/cn';
-import { Spinner } from './Spinner';
-
-export type ButtonVariant = 'solid' | 'outline' | 'ghost' | 'danger' | 'dangerOutline' | 'success' | 'secondary';
-export type ButtonSize = 'sm' | 'md' | 'lg';
+import type { ButtonVariant, ButtonSize, ButtonProps } from '@/types/ui';
+import { cn } from '@/utils/cn';
+import { Spinner } from '@/components/ui/Spinner';
 
 const VARIANTS: Record<ButtonVariant, string> = {
   solid: 'bg-primary-600 text-white shadow-sm hover:bg-primary-700',
@@ -22,15 +20,6 @@ const SIZES: Record<ButtonSize, string> = {
   md: 'min-h-12 px-5 text-base',
   lg: 'min-h-14 px-6 text-lg',
 };
-
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  loading?: boolean;
-  leftIcon?: ReactNode;
-  rightIcon?: ReactNode;
-  fullWidth?: boolean;
-}
 
 export function Button({
   variant = 'solid',

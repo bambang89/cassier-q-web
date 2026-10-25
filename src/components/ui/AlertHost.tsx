@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react';
 
+import type { AlertRequest } from '@/types/ui';
 import { dismissAlert, subscribeAlerts } from '@/lib/alert';
-import type { AlertRequest } from '@/lib/alert';
-import { cn } from '@/lib/cn';
-import { Modal } from './Modal';
+import { cn } from '@/utils/cn';
+import { Modal } from '@/components/ui/Modal';
 
 /** Menampilkan antrean Alert.alert() satu per satu. */
 export function AlertHost() {

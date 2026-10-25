@@ -1,60 +1,10 @@
 import type { ComponentType } from 'react';
 
-import { useAppSelector } from '@/store/hooks';
-import {
-  BarChartIcon,
-  BoxIcon,
-  CartIcon,
-  ClipboardIcon,
-  DashboardIcon,
-  EmployeeIcon,
-  FolderIcon,
-  GlobeIcon,
-  LayersIcon,
-  PeopleIcon,
-  PlugIcon,
-  PrintIcon,
-  ReceiptIcon,
-  ScaleIcon,
-  SettingsIcon,
-  StoreIcon,
-  TruckIcon,
-  WalletIcon,
-} from '@/components/icons/LineIcons';
-import type { LineIconProps } from '@/components/icons/LineIcons';
-
-/**
- * Katalog menu — padanan navigation/menuCatalog.ts di aplikasi mobile.
- * Key sama dengan MenuAccessService.MENUS di backend; target berupa URL.
- */
-export type MenuKey =
-  | 'dashboard'
-  | 'pos'
-  | 'orders'
-  | 'pesanan'
-  | 'products'
-  | 'categories'
-  | 'units'
-  | 'inventory'
-  | 'customers'
-  | 'expenses'
-  | 'reports'
-  | 'suppliers'
-  | 'purchase_orders'
-  | 'employees'
-  | 'outlet'
-  | 'integrations'
-  | 'printer';
-
-export type MenuEntry = {
-  key: MenuKey;
-  label: string;
-  hint: string;
-  icon: ComponentType<LineIconProps>;
-  /** Kelas warna chip ikon (teks + latar). */
-  tint: string;
-  href: string;
-};
+import type { LineIconProps } from '@/types/ui';
+import type { MenuKey, MenuEntry } from '@/types/navigation';
+import { DashboardIcon, CartIcon, ReceiptIcon, ClipboardIcon, BoxIcon, LayersIcon, PeopleIcon, BarChartIcon, EmployeeIcon, StoreIcon, PlugIcon, SettingsIcon, GlobeIcon } from '@/components/ui/icons/NavIcons';
+import { TruckIcon, ScaleIcon, FolderIcon, WalletIcon } from '@/components/ui/icons/DataIcons';
+import { PrintIcon } from '@/components/ui/icons/ActionIcons';
 
 const blue = 'bg-primary-50 text-primary-600';
 const teal = 'bg-info-50 text-info-700';
@@ -113,22 +63,3 @@ export const PHONE_TABS = [
 
 export const PHONE_TAB_HREFS: string[] = PHONE_TABS.map((t) => t.href);
 
-/** Hak akses menu user yang sedang login (null dari server = semua boleh). */
-export function useMenuAccess() {
-  const allowed = useAppSelector((state) => state.access.allowedMenus);
-  const user = useAppSelector((state) => state.auth.user);
-  const isSuperadmin = !!user?.superadmin;
-  const isManager = isSuperadmin || !!user?.roles.some((r) => r.roleCode === 'KEPALA_TOKO');
-  const can = (key: MenuKey) => key === 'dashboard' || allowed === null || allowed.includes(key);
-  return { can, isManager, isSuperadmin };
-}
-
-/** Inisial nama (maks 2 huruf) untuk avatar. */
-export function initialsOf(name?: string | null): string {
-  return (name ?? '?')
-    .split(' ')
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part.charAt(0).toUpperCase())
-    .join('');
-}

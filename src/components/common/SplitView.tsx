@@ -2,8 +2,8 @@
 
 import type { ReactNode } from 'react';
 
-import { cn } from '@/lib/cn';
-import { SearchIcon } from '@/components/icons/LineIcons';
+import { cn } from '@/utils/cn';
+import { SearchIcon } from '@/components/ui/icons/ActionIcons';
 
 /**
  * Daftar di kiri (330px) + detail di kanan — padanan TabletSplitView mobile

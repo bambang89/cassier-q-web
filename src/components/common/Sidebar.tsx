@@ -3,12 +3,14 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { cn } from '@/lib/cn';
+import { SIDEBAR_ITEMS } from '@/config/navigation';
 import { Alert } from '@/lib/alert';
-import { useAppSelector } from '@/store/hooks';
-import { HelpIcon } from '@/components/icons/LineIcons';
-import { SIDEBAR_ITEMS, initialsOf, useMenuAccess } from '@/navigation/menu';
-import { useNewOrderCount } from '@/features/customer-orders/useNewOrderCount';
+import { useAppSelector } from '@/hooks/store';
+import { useMenuAccess } from '@/hooks/useMenuAccess';
+import { cn } from '@/utils/cn';
+import { initialsOf } from '@/utils/text';
+import { HelpIcon } from '@/components/ui/icons/NavIcons';
+import { useNewOrderCount } from '@/features/customer-orders/hooks/useNewOrderCount';
 
 /** Rail navy 82px di kiri — padanan SidebarTabBar (mode tablet) di aplikasi mobile. */
 export function Sidebar() {

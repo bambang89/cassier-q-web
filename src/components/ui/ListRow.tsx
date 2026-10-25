@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { cn } from '@/lib/cn';
+import { cn } from '@/utils/cn';
 
 /** Baris kartu sederhana (judul, keterangan, aksi di kanan) untuk daftar master data. */
 export function ListRow({

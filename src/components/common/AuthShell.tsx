@@ -4,8 +4,9 @@ import { useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { CheckIcon } from '@/components/icons/LineIcons';
-import { FullScreenLoader, useAuthBootstrap } from './AuthBootstrap';
+import { useAuthBootstrap } from '@/hooks/useAuthBootstrap';
+import { FullScreenLoader } from '@/components/common/AuthBootstrap';
+import { CheckIcon } from '@/components/ui/icons/ActionIcons';
 
 const HIGHLIGHTS = [
   'Kasir cepat dengan scan barcode & cetak struk',

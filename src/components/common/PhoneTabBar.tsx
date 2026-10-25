@@ -3,10 +3,12 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { cn } from '@/lib/cn';
-import { BoxIcon, CartIcon, DashboardIcon, MoreIcon, ReceiptIcon } from '@/components/icons/LineIcons';
-import { PHONE_TABS, PHONE_TAB_HREFS, useMenuAccess } from '@/navigation/menu';
-import type { MenuKey } from '@/navigation/menu';
+import type { MenuKey } from '@/types/navigation';
+import { PHONE_TABS, PHONE_TAB_HREFS } from '@/config/navigation';
+import { useMenuAccess } from '@/hooks/useMenuAccess';
+import { cn } from '@/utils/cn';
+import { DashboardIcon, CartIcon, ReceiptIcon, BoxIcon } from '@/components/ui/icons/NavIcons';
+import { MoreIcon } from '@/components/ui/icons/ActionIcons';
 
 const ICONS = { dashboard: DashboardIcon, orders: ReceiptIcon, pos: CartIcon, products: BoxIcon, menu: MoreIcon };
 

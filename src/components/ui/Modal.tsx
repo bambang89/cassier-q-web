@@ -1,22 +1,11 @@
 'use client';
 
 import { useEffect } from 'react';
-import type { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 
-import { cn } from '@/lib/cn';
-import { CloseIcon } from '@/components/icons/LineIcons';
-
-export interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  children: ReactNode;
-  title?: string;
-  closeOnBackdropPress?: boolean;
-  /** Lebar kartu di layar lebar (default 460px seperti tablet). */
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-  className?: string;
-}
+import type { ModalProps } from '@/types/ui';
+import { cn } from '@/utils/cn';
+import { CloseIcon } from '@/components/ui/icons/ActionIcons';
 
 const SIZES = { sm: 'tab:max-w-[400px]', md: 'tab:max-w-[460px]', lg: 'tab:max-w-[620px]', xl: 'tab:max-w-[860px]' };
 

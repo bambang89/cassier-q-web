@@ -1,11 +1,9 @@
 import type { ComponentType, ReactNode } from 'react';
 
-import { cn } from '@/lib/cn';
-import type { LineIconProps } from '@/components/icons/LineIcons';
-import { TrendDownIcon, TrendUpIcon } from '@/components/icons/LineIcons';
-import { Button } from './Button';
-
-export type BadgeVariant = 'primary' | 'success' | 'warning' | 'error' | 'neutral' | 'info';
+import type { BadgeVariant, LineIconProps } from '@/types/ui';
+import { cn } from '@/utils/cn';
+import { Button } from '@/components/ui/Button';
+import { TrendUpIcon, TrendDownIcon } from '@/components/ui/icons/DataIcons';
 
 const BADGE: Record<BadgeVariant, string> = {
   primary: 'bg-primary-100 text-primary-700',

@@ -4,25 +4,13 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import type { ReactNode } from 'react';
 
+import type { PageHeaderProps } from '@/types/ui';
+import { PHONE_TAB_HREFS } from '@/config/navigation';
 import { Alert } from '@/lib/alert';
-import { useAppSelector } from '@/store/hooks';
-import { BellIcon, ChevronDownIcon, ChevronLeftIcon, StoreIcon } from '@/components/icons/LineIcons';
-import { PHONE_TAB_HREFS, initialsOf } from '@/navigation/menu';
-
-export interface PageHeaderProps {
-  title: string;
-  subtitle?: string;
-  /** Tombol aksi di kanan (mis. "Tambah Produk"). */
-  right?: ReactNode;
-  /**
-   * Tujuan tombol kembali. Default: layar di luar tab bar HP kembali ke /menu
-   * (di HP saja); layar detail sebaiknya mengisi ini (mis. "/orders").
-   */
-  backHref?: string;
-  /** Judul/subjudul khusus HP bila berbeda dari layar lebar. */
-  phoneTitle?: string;
-  phoneSubtitle?: string;
-}
+import { useAppSelector } from '@/hooks/store';
+import { initialsOf } from '@/utils/text';
+import { StoreIcon } from '@/components/ui/icons/NavIcons';
+import { BellIcon, ChevronDownIcon, ChevronLeftIcon } from '@/components/ui/icons/ActionIcons';
 
 /**
  * Satu header untuk dua kerangka, seperti aplikasi mobile:

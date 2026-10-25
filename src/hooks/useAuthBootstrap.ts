@@ -1,11 +1,9 @@
-'use client';
-
 import { useEffect } from 'react';
 
-import { setSessionExpiredHandler } from '@/api/client';
-import { store } from '@/store';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { bootstrapAuth, sessionExpired } from '@/store/slices/authSlice';
+import { sessionExpired, bootstrapAuth } from '@/lib/store/slices/authSlice';
+import { store } from '@/lib/store';
+import { setSessionExpiredHandler } from '@/lib/apiClient';
+import { useAppSelector, useAppDispatch } from '@/hooks/store';
 
 /** Memulai pengecekan sesi sekali (padanan useEffect di RootNavigator mobile). */
 export function useAuthBootstrap() {
@@ -19,12 +17,4 @@ export function useAuthBootstrap() {
   }, [dispatch]);
 
   return status;
-}
-
-export function FullScreenLoader() {
-  return (
-    <div className="flex h-dvh items-center justify-center bg-white">
-      <span className="size-9 animate-spin rounded-full border-[3px] border-primary-600 border-t-transparent" />
-    </div>
-  );
 }
