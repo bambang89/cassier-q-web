@@ -22,8 +22,9 @@ pipeline {
       }
     }
 
+    // Yang di-deploy: tag (mis. v0.1.1) dan branch production (master; repo ini memakai main).
     stage('Push to registry') {
-      when { buildingTag() }
+      when { anyOf { buildingTag(); branch 'master'; branch 'main' } }
       steps {
         sh '''
           docker tag  $IMAGE:$IMAGE_TAG $IMAGE:latest
@@ -34,7 +35,7 @@ pipeline {
     }
 
     stage('Deploy') {
-      when { buildingTag() }
+      when { anyOf { buildingTag(); branch 'master'; branch 'main' } }
       steps {
         sh '''
           if [ ! -x $DEPLOY_DIR/deploy.sh ]; then
