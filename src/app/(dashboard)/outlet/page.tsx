@@ -1,7 +1,7 @@
 'use client';
 
-import { PageBody, PageHeader } from '@/components/layout/PageHeader';
-import { StoreProfileForm } from '@/features/account/StoreProfileForm';
+import { PageBody, PageHeader } from '@/components/common/PageHeader';
+import { StoreProfileForm } from '@/features/account/components/StoreProfileForm';
 
 export default function OutletPage() {
   return (

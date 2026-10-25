@@ -5,11 +5,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import { Alert } from '@/lib/alert';
-import { useAppDispatch } from '@/store/hooks';
-import { forgotPassword } from '@/store/slices/authSlice';
+import { forgotPassword } from '@/lib/store/slices/authSlice';
+import { useAppDispatch } from '@/hooks/store';
 import { Button } from '@/components/ui/Button';
 import { FormControl, Input } from '@/components/ui/Field';
-import { AuthLogo } from '@/components/layout/AuthShell';
+import { AuthLogo } from '@/components/common/AuthShell';
 
 export default function ForgotPasswordPage() {
   const router = useRouter();

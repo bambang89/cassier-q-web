@@ -3,13 +3,13 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
+import { clearRememberedUsername, loadRememberedUsername, saveRememberedUsername } from '@/services/tokenStorage';
 import { Alert } from '@/lib/alert';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { login } from '@/store/slices/authSlice';
-import { clearRememberedUsername, loadRememberedUsername, saveRememberedUsername } from '@/api/tokenStorage';
+import { login } from '@/lib/store/slices/authSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
 import { Button } from '@/components/ui/Button';
 import { CheckBox, FormControl, Input, PasswordInput } from '@/components/ui/Field';
-import { AuthLogo } from '@/components/layout/AuthShell';
+import { AuthLogo } from '@/components/common/AuthShell';
 
 export default function LoginPage() {
   const dispatch = useAppDispatch();

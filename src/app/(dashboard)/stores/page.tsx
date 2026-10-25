@@ -3,15 +3,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import type { AdminStore } from '@/api/accessApi';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { chooseActiveStore, fetchAdminStores } from '@/store/slices/accessSlice';
-import { logout } from '@/store/slices/authSlice';
-import { cn } from '@/lib/cn';
+import type { AdminStore } from '@/types/api';
+import { chooseActiveStore, fetchAdminStores } from '@/lib/store/slices/accessSlice';
+import { logout } from '@/lib/store/slices/authSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
+import { cn } from '@/utils/cn';
 import { Input } from '@/components/ui/Field';
 import { Badge, EmptyState } from '@/components/ui/Display';
 import { LoadingBlock } from '@/components/ui/Spinner';
-import { CheckIcon, ChevronLeftIcon, ChevronRightIcon, SearchIcon, StoreIcon } from '@/components/icons/LineIcons';
+import { StoreIcon } from '@/components/ui/icons/NavIcons';
+import { SearchIcon, CheckIcon, ChevronRightIcon, ChevronLeftIcon } from '@/components/ui/icons/ActionIcons';
 
 /**
  * Khusus SUPERADMIN (pemilik aplikasi): pilih toko yang mau dibantu. Semua

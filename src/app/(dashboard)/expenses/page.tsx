@@ -1,7 +1,7 @@
 'use client';
 
-import { WalletIcon } from '@/components/icons/LineIcons';
-import { ComingSoon } from '@/components/layout/ComingSoon';
+import { ComingSoon } from '@/components/common/ComingSoon';
+import { WalletIcon } from '@/components/ui/icons/DataIcons';
 
 export default function ExpensesPage() {
   return (

@@ -3,12 +3,13 @@
 import { useState } from 'react';
 import Link from 'next/link';
 
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { register } from '@/store/slices/authSlice';
+import { register } from '@/lib/store/slices/authSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
 import { Button } from '@/components/ui/Button';
 import { FormControl, Input, PasswordInput } from '@/components/ui/Field';
-import { PersonIcon, StoreIcon } from '@/components/icons/LineIcons';
-import { AuthLogo } from '@/components/layout/AuthShell';
+import { AuthLogo } from '@/components/common/AuthShell';
+import { StoreIcon } from '@/components/ui/icons/NavIcons';
+import { PersonIcon } from '@/components/ui/icons/DataIcons';
 
 export default function RegisterPage() {
   const dispatch = useAppDispatch();

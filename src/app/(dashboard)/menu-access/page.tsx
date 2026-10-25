@@ -2,18 +2,18 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
+import type { MenuKey } from '@/types/navigation';
+import { MENU_CATALOG, MENU_KEYS } from '@/config/navigation';
 import { Alert } from '@/lib/alert';
-import { cn } from '@/lib/cn';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { fetchMenuAccess, saveMenuAccess } from '@/store/slices/accessSlice';
-import { MENU_CATALOG, MENU_KEYS } from '@/navigation/menu';
-import type { MenuKey } from '@/navigation/menu';
-import { PageBody, PageHeader } from '@/components/layout/PageHeader';
+import { fetchMenuAccess, saveMenuAccess } from '@/lib/store/slices/accessSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
+import { cn } from '@/utils/cn';
+import { PageBody, PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Switch } from '@/components/ui/Field';
 import { EmptyState } from '@/components/ui/Display';
 import { LoadingBlock } from '@/components/ui/Spinner';
-import { CheckIcon, LockIcon } from '@/components/icons/LineIcons';
+import { LockIcon, CheckIcon } from '@/components/ui/icons/ActionIcons';
 
 const ROLES = [
   { code: 'PRODUCT', label: 'Produk', hint: 'Admin produk — mengelola katalog, harga & stok' },

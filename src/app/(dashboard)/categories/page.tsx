@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react';
 
 import type { Category } from '@/types/models';
 import { Alert } from '@/lib/alert';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { createCategory, deleteCategory, fetchCategories } from '@/store/slices/categoriesSlice';
+import { createCategory, deleteCategory, fetchCategories } from '@/lib/store/slices/categoriesSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
 import { usePermissions } from '@/hooks/usePermissions';
-import { PageBody, PageHeader } from '@/components/layout/PageHeader';
+import { PageBody, PageHeader } from '@/components/common/PageHeader';
 import { Modal } from '@/components/ui/Modal';
 import { AlertDialog } from '@/components/ui/AlertDialog';
 import { Button } from '@/components/ui/Button';
@@ -15,7 +15,8 @@ import { FormControl, Input } from '@/components/ui/Field';
 import { EmptyState } from '@/components/ui/Display';
 import { LoadingBlock } from '@/components/ui/Spinner';
 import { ListRow, RowIcon } from '@/components/ui/ListRow';
-import { FolderIcon, PlusIcon } from '@/components/icons/LineIcons';
+import { PlusIcon } from '@/components/ui/icons/ActionIcons';
+import { FolderIcon } from '@/components/ui/icons/DataIcons';
 
 export default function CategoriesPage() {
   const { can } = usePermissions();

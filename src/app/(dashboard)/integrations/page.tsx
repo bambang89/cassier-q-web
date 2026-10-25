@@ -1,7 +1,7 @@
 'use client';
 
-import { PlugIcon } from '@/components/icons/LineIcons';
-import { ComingSoon } from '@/components/layout/ComingSoon';
+import { ComingSoon } from '@/components/common/ComingSoon';
+import { PlugIcon } from '@/components/ui/icons/NavIcons';
 
 export default function IntegrationsPage() {
   return (

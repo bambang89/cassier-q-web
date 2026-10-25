@@ -3,17 +3,17 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { logout } from '@/store/slices/authSlice';
+import type { MenuKey, MenuPageItem } from '@/types/navigation';
+import { MENU_CATALOG } from '@/config/navigation';
+import { logout } from '@/lib/store/slices/authSlice';
 import { Alert } from '@/lib/alert';
-import { MENU_CATALOG, initialsOf, useMenuAccess } from '@/navigation/menu';
-import type { MenuKey } from '@/navigation/menu';
-import { PageBody, PageHeader } from '@/components/layout/PageHeader';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
+import { useMenuAccess } from '@/hooks/useMenuAccess';
+import { initialsOf } from '@/utils/text';
+import { PageBody, PageHeader } from '@/components/common/PageHeader';
 import { AlertDialog } from '@/components/ui/AlertDialog';
-import type { LineIconProps } from '@/components/icons/LineIcons';
-import { ChevronRightIcon, GlobeIcon, HelpIcon, LogoutIcon, SettingsIcon, StoreIcon } from '@/components/icons/LineIcons';
-
-type Item = { key: string; label: string; hint: string; icon: React.ComponentType<LineIconProps>; tint: string; onClick: () => void };
+import { StoreIcon, SettingsIcon, HelpIcon, LogoutIcon, GlobeIcon } from '@/components/ui/icons/NavIcons';
+import { ChevronRightIcon } from '@/components/ui/icons/ActionIcons';
 
 const SECTION_KEYS: { title: string; keys: MenuKey[] }[] = [
   { title: 'Operasional', keys: ['pesanan', 'inventory', 'customers', 'expenses'] },
@@ -33,7 +33,7 @@ export default function MenuPage() {
   const role = user?.roles?.[0];
   const roleLabel = user?.superadmin ? 'Pemilik Aplikasi' : (role?.roleName ?? '-');
   const storeLabel = isSuperadmin ? (activeStore?.name ?? 'Belum memilih toko') : (role?.storeName ?? '-');
-  const fromCatalog = (key: MenuKey): Item => {
+  const fromCatalog = (key: MenuKey): MenuPageItem => {
     const entry = MENU_CATALOG[key];
     return { key, label: entry.label, hint: entry.hint, icon: entry.icon, tint: entry.tint, onClick: () => router.push(entry.href) };
   };
