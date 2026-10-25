@@ -2,37 +2,11 @@
 
 import { useState } from 'react';
 
-import type { OrderStatus } from '@/types/models';
 import { Alert } from '@/lib/alert';
-import { useAppDispatch } from '@/store/hooks';
-import { voidOrder } from '@/store/slices/ordersSlice';
+import { voidOrder } from '@/lib/store/slices/ordersSlice';
+import { useAppDispatch } from '@/hooks/store';
 import { Button } from '@/components/ui/Button';
 import { FormControl, TextArea } from '@/components/ui/Field';
-import type { BadgeVariant } from '@/components/ui/Display';
-
-export const STATUS_VARIANT: Record<string, BadgeVariant> = { PAID: 'success', VOID: 'error' };
-const STATUS_LABEL: Record<string, string> = { PAID: 'Lunas', VOID: 'Dibatalkan' };
-
-export function statusLabel(status: OrderStatus) {
-  return STATUS_LABEL[status] ?? status;
-}
-
-export function money(value: number) {
-  return `Rp ${value.toLocaleString('id-ID')}`;
-}
-
-export function timeLabel(iso: string): string {
-  const date = new Date(iso);
-  const today = new Date();
-  const time = date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-  return date.toDateString() === today.toDateString()
-    ? `Hari ini ${time}`
-    : `${date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })} ${time}`;
-}
-
-export function dateTimeLabel(iso: string): string {
-  return new Date(iso).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
-}
 
 export function VoidForm({ orderId, onDone, onCancel }: { orderId: string; onDone: () => void; onCancel: () => void }) {
   const dispatch = useAppDispatch();

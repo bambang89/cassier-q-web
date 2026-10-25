@@ -3,15 +3,18 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { clearCurrentOrder, fetchOrder } from '@/store/slices/ordersSlice';
+import { clearCurrentOrder, fetchOrder } from '@/lib/store/slices/ordersSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
 import { usePermissions } from '@/hooks/usePermissions';
-import { PageBody, PageHeader } from '@/components/layout/PageHeader';
+import { formatRupiah } from '@/utils/format';
+import { dateTimeLabel } from '@/utils/date';
+import { PageBody, PageHeader } from '@/components/common/PageHeader';
 import { Modal } from '@/components/ui/Modal';
 import { Badge, Card } from '@/components/ui/Display';
 import { Button } from '@/components/ui/Button';
 import { LoadingBlock } from '@/components/ui/Spinner';
-import { STATUS_VARIANT, VoidForm, dateTimeLabel, money, statusLabel } from '@/features/orders/orderUi';
+import { VoidForm } from '@/features/orders/components/OrderUi';
+import { STATUS_VARIANT, statusLabel } from '@/features/orders/utils';
 
 export default function OrderDetailPage() {
   const { orderId } = useParams<{ orderId: string }>();
@@ -49,10 +52,10 @@ export default function OrderDetailPage() {
                   <div>
                     <p className="font-medium text-ink">{item.productName}</p>
                     <p className="text-[13px] text-ink-2">
-                      {item.quantity} {item.unitName} × {money(item.unitPrice)}
+                      {item.quantity} {item.unitName} × {formatRupiah(item.unitPrice, true)}
                     </p>
                   </div>
-                  <p className="font-semibold text-ink">{money(item.subtotal)}</p>
+                  <p className="font-semibold text-ink">{formatRupiah(item.subtotal, true)}</p>
                 </div>
               ))}
               <hr className="my-4 border-line" />
@@ -97,7 +100,7 @@ function SummaryRow({ label, value, bold }: { label: string; value: number; bold
     <div className="flex items-center justify-between">
       <span className={bold ? 'font-semibold text-ink-2' : 'text-ink-2'}>{label}</span>
       <span className={bold ? 'text-lg font-bold text-ink' : 'font-medium text-ink'}>
-        {value < 0 ? `− ${money(-value)}` : money(value)}
+        {value < 0 ? `− ${formatRupiah(-value, true)}` : formatRupiah(value, true)}
       </span>
     </div>
   );

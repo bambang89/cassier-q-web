@@ -1,8 +1,8 @@
 'use client';
 
 import { PAPER_WIDTHS } from '@/services/printing/settings';
-import type { PaperWidth } from '@/services/printing/settings';
-import { cn } from '@/lib/cn';
+import type { PaperWidth } from '@/services/printing/types';
+import { cn } from '@/utils/cn';
 
 /** Pilihan lebar kertas struk: 58mm (printer kecil) / 80mm (printer POS standar). */
 export function PaperWidthPicker({ value, onChange }: { value: PaperWidth; onChange: (width: PaperWidth) => void }) {
