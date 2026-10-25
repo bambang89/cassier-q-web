@@ -1,53 +1,32 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import type { ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 
-import * as productsApi from '@/api/productsApi';
-import * as bundlesApi from '@/api/bundlesApi';
-import { apiErrorMessage } from '@/api/errors';
 import type { Product, ProductUnit } from '@/types/models';
+import * as productsApi from '@/services/productsApi';
+import * as bundlesApi from '@/services/bundlesApi';
 import { Alert } from '@/lib/alert';
-import { cn } from '@/lib/cn';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { fetchCategories } from '@/store/slices/categoriesSlice';
-import { fetchProducts } from '@/store/slices/productsSlice';
-import { useMenuAccess } from '@/navigation/menu';
+import { fetchCategories } from '@/lib/store/slices/categoriesSlice';
+import { fetchProducts } from '@/lib/store/slices/productsSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
+import { useMenuAccess } from '@/hooks/useMenuAccess';
+import { apiErrorMessage } from '@/utils/apiErrors';
+import { cn } from '@/utils/cn';
 import { isBundle } from '@/utils/bundles';
-import { PageBody, PageHeader } from '@/components/layout/PageHeader';
+import { formatRupiah } from '@/utils/format';
+import { PageBody, PageHeader } from '@/components/common/PageHeader';
 import { Modal } from '@/components/ui/Modal';
 import { AlertDialog } from '@/components/ui/AlertDialog';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/Display';
 import { FormControl, Input, Select, TextArea } from '@/components/ui/Field';
-import { BoxIcon, PlusIcon, TrashIcon } from '@/components/icons/LineIcons';
-import { SearchBox } from '@/features/inventory/shared';
-import { generateSku } from '@/features/products/productUtils';
-import { rupiah } from './promoUtils';
-
-/** Satu isi paket yang sedang diedit. */
-type DraftItem = {
-  productId: string;
-  productName: string;
-  unitId: string;
-  unitName: string;
-  conversionToBase: number;
-  quantity: number;
-  /** Harga jual per satuan dasar (pembanding "harga normal"). */
-  basePrice: number;
-  stockBase: number;
-  units: ProductUnit[];
-};
-
-function SectionCard({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <section>
-      <p className="mb-2 ml-1 text-[11.5px] font-bold tracking-[0.08em] text-ink-3">{title.toUpperCase()}</p>
-      <div className="rounded-2xl border border-line bg-white p-5 shadow-card">{children}</div>
-    </section>
-  );
-}
+import { SectionCard } from '@/components/ui/SectionCard';
+import { BoxIcon } from '@/components/ui/icons/NavIcons';
+import { TrashIcon, PlusIcon } from '@/components/ui/icons/ActionIcons';
+import { SearchBox } from '@/features/inventory/components/shared';
+import { generateSku } from '@/features/products/utils';
+import type { DraftItem } from '@/features/settings/types';
 
 /** Buat atau ubah paket bundling (khusus Kepala Toko). */
 export function BundleForm({ editing }: { editing?: Product }) {
@@ -206,7 +185,7 @@ export function BundleForm({ editing }: { editing?: Product }) {
                       <div className="min-w-0 flex-1">
                         <p className="truncate font-semibold text-ink">{item.productName}</p>
                         <p className="text-[12.5px] text-ink-3">
-                          {rupiah(item.basePrice * item.conversionToBase)} / {item.unitName} · stok {item.stockBase}
+                          {formatRupiah(item.basePrice * item.conversionToBase)} / {item.unitName} · stok {item.stockBase}
                         </p>
                       </div>
                       <button
@@ -262,7 +241,7 @@ export function BundleForm({ editing }: { editing?: Product }) {
                 <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Mis. Paket Sarapan" maxLength={200} />
               </FormControl>
               <div className="grid gap-x-3 sm:grid-cols-2">
-                <FormControl label="Harga paket (Rp)" isRequired helperText={normalPrice > 0 ? `Harga normal isinya ${rupiah(normalPrice)}` : undefined}>
+                <FormControl label="Harga paket (Rp)" isRequired helperText={normalPrice > 0 ? `Harga normal isinya ${formatRupiah(normalPrice)}` : undefined}>
                   <Input value={price} onChange={(e) => setPrice(e.target.value.replace(/\D/g, ''))} inputMode="numeric" placeholder="25000" />
                 </FormControl>
                 <FormControl label="Kategori" isRequired>
@@ -300,11 +279,11 @@ export function BundleForm({ editing }: { editing?: Product }) {
             <div className="relative overflow-hidden rounded-2xl bg-[linear-gradient(135deg,#0B1F33_0%,#122A44_55%,#1A3654_100%)] p-5 shadow-lg">
               <span className="absolute -top-6 -right-4 text-[88px] opacity-15">🎁</span>
               <p className="relative truncate text-[11.5px] font-semibold tracking-[0.1em] text-white/60">{name.trim() ? name.trim().toUpperCase() : 'PAKET BARU'}</p>
-              <p className="relative text-[30px] leading-[38px] font-extrabold text-white">{rupiah(bundlePrice)}</p>
+              <p className="relative text-[30px] leading-[38px] font-extrabold text-white">{formatRupiah(bundlePrice)}</p>
               <div className="relative mt-3 grid grid-cols-3 gap-2 border-t border-white/12 pt-3">
                 <div>
                   <p className="text-[12px] text-white/60">Harga normal</p>
-                  <p className={cn('font-semibold', normalPrice > bundlePrice ? 'text-white/70 line-through' : 'text-white')}>{rupiah(normalPrice)}</p>
+                  <p className={cn('font-semibold', normalPrice > bundlePrice ? 'text-white/70 line-through' : 'text-white')}>{formatRupiah(normalPrice)}</p>
                 </div>
                 <div>
                   <p className="text-[12px] text-white/60">Pembeli hemat</p>
@@ -336,7 +315,7 @@ export function BundleForm({ editing }: { editing?: Product }) {
                     {p.sku} · stok {p.stockQuantity} {p.baseUnitName}
                   </span>
                 </span>
-                <span className="text-sm font-semibold text-primary-700">{rupiah(p.sellingPrice)}</span>
+                <span className="text-sm font-semibold text-primary-700">{formatRupiah(p.sellingPrice)}</span>
               </button>
             ))
           )}

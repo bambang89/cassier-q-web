@@ -3,13 +3,13 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 
-import * as bundlesApi from '@/api/bundlesApi';
 import type { Product } from '@/types/models';
-import { PageHeader } from '@/components/layout/PageHeader';
+import * as bundlesApi from '@/services/bundlesApi';
+import { PageHeader } from '@/components/common/PageHeader';
 import { LoadingBlock } from '@/components/ui/Spinner';
 import { EmptyState } from '@/components/ui/Display';
-import { BoxIcon } from '@/components/icons/LineIcons';
-import { BundleForm } from '@/features/settings/BundleForm';
+import { BoxIcon } from '@/components/ui/icons/NavIcons';
+import { BundleForm } from '@/features/settings/components/BundleForm';
 
 export default function BundleEditPage() {
   const { bundleId } = useParams<{ bundleId: string }>();

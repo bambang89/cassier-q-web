@@ -1,7 +1,7 @@
 'use client';
 
-import { PageBody, PageHeader } from '@/components/layout/PageHeader';
-import { BundleList } from '@/features/settings/BundleList';
+import { PageBody, PageHeader } from '@/components/common/PageHeader';
+import { BundleList } from '@/features/settings/components/BundleList';
 
 export default function BundlesPage() {
   return (

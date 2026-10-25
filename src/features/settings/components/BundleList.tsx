@@ -3,17 +3,18 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import * as bundlesApi from '@/api/bundlesApi';
-import { apiErrorMessage } from '@/api/errors';
 import type { Product } from '@/types/models';
+import * as bundlesApi from '@/services/bundlesApi';
 import { Alert } from '@/lib/alert';
-import { cn } from '@/lib/cn';
-import { useMenuAccess } from '@/navigation/menu';
+import { useMenuAccess } from '@/hooks/useMenuAccess';
+import { apiErrorMessage } from '@/utils/apiErrors';
+import { cn } from '@/utils/cn';
+import { formatRupiah } from '@/utils/format';
 import { EmptyState } from '@/components/ui/Display';
 import { Button } from '@/components/ui/Button';
 import { LoadingBlock } from '@/components/ui/Spinner';
-import { BoxIcon, ChevronRightIcon, PlusIcon } from '@/components/icons/LineIcons';
-import { rupiah } from './promoUtils';
+import { BoxIcon } from '@/components/ui/icons/NavIcons';
+import { PlusIcon, ChevronRightIcon } from '@/components/ui/icons/ActionIcons';
 
 /** Paket toko dengan isi, harga, dan berapa yang masih bisa dijual. Khusus Kepala Toko. */
 export function BundleList() {
@@ -84,7 +85,7 @@ export function BundleList() {
                     {items.map((i) => `${Number(i.quantity)} ${i.unitName} ${i.productName}`).join(' · ') || 'Belum ada isi'}
                   </span>
                   <span className="mt-1 flex items-center justify-between">
-                    <span className="font-bold text-primary-700">{rupiah(item.sellingPrice)}</span>
+                    <span className="font-bold text-primary-700">{formatRupiah(item.sellingPrice)}</span>
                     <span
                       className={cn(
                         'rounded-full px-2 py-0.5 text-[12px] font-semibold',

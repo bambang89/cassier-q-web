@@ -3,17 +3,19 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import * as promoApi from '@/api/promoCodesApi';
-import { apiErrorMessage } from '@/api/errors';
 import type { PromoCode } from '@/types/models';
+import * as promoApi from '@/services/promoCodesApi';
 import { Alert } from '@/lib/alert';
-import { useMenuAccess } from '@/navigation/menu';
+import { useMenuAccess } from '@/hooks/useMenuAccess';
+import { apiErrorMessage } from '@/utils/apiErrors';
+import { formatShortDate } from '@/utils/date';
 import { Badge, EmptyState } from '@/components/ui/Display';
 import { Button } from '@/components/ui/Button';
 import { Switch } from '@/components/ui/Field';
 import { LoadingBlock } from '@/components/ui/Spinner';
-import { DiscountIcon, PlusIcon } from '@/components/icons/LineIcons';
-import { promoStatus, promoSummary, shortDate } from './promoUtils';
+import { DiscountIcon } from '@/components/ui/icons/DataIcons';
+import { PlusIcon } from '@/components/ui/icons/ActionIcons';
+import { promoStatus, promoSummary } from '@/features/settings/utils';
 
 /** Kode promo toko dengan status, pemakaian, dan saklar aktif; klik kartu untuk mengubah. */
 export function PromoCodeList() {
@@ -97,7 +99,7 @@ export function PromoCodeList() {
                     Dipakai {item.usedCount}
                     {item.usageLimit !== null ? ` / ${item.usageLimit}` : ''} kali
                   </span>
-                  <span>{item.endsAt ? `s.d. ${shortDate(item.endsAt)}` : 'Tanpa batas waktu'}</span>
+                  <span>{item.endsAt ? `s.d. ${formatShortDate(item.endsAt)}` : 'Tanpa batas waktu'}</span>
                 </div>
               </div>
             );

@@ -4,15 +4,16 @@ import { useEffect, useState } from 'react';
 
 import type { PaymentMethod } from '@/types/models';
 import { Alert } from '@/lib/alert';
-import { cn } from '@/lib/cn';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { fetchCheckoutSettings, saveCheckoutSettings } from '@/store/slices/checkoutSettingsSlice';
-import { useMenuAccess } from '@/navigation/menu';
+import { fetchCheckoutSettings, saveCheckoutSettings } from '@/lib/store/slices/checkoutSettingsSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
+import { useMenuAccess } from '@/hooks/useMenuAccess';
+import { cn } from '@/utils/cn';
 import { Button } from '@/components/ui/Button';
 import { Switch } from '@/components/ui/Field';
 import { LoadingBlock } from '@/components/ui/Spinner';
-import { CheckIcon, ReceiptIcon } from '@/components/icons/LineIcons';
-import { PAYMENT_METHOD_ICONS } from '@/features/pos/CheckoutForm';
+import { ReceiptIcon } from '@/components/ui/icons/NavIcons';
+import { CheckIcon } from '@/components/ui/icons/ActionIcons';
+import { PAYMENT_METHOD_ICONS } from '@/features/pos/components/CheckoutForm';
 
 const sectionLabel = 'mb-2 mt-2 text-[11.5px] font-bold tracking-[0.08em] text-ink-3';
 

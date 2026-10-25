@@ -1,7 +1,7 @@
 'use client';
 
-import { PageBody, PageHeader } from '@/components/layout/PageHeader';
-import { PromoCodeList } from '@/features/settings/PromoCodeList';
+import { PageBody, PageHeader } from '@/components/common/PageHeader';
+import { PromoCodeList } from '@/features/settings/components/PromoCodeList';
 
 export default function PromoCodesPage() {
   return (

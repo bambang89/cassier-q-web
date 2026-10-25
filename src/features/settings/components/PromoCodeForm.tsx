@@ -1,20 +1,22 @@
 'use client';
 
 import { useState } from 'react';
-import type { ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 
-import * as promoApi from '@/api/promoCodesApi';
-import { apiErrorMessage } from '@/api/errors';
 import type { PromoCode, PromoCodePayload, PromoDiscountType } from '@/types/models';
+import * as promoApi from '@/services/promoCodesApi';
 import { Alert } from '@/lib/alert';
-import { cn } from '@/lib/cn';
-import { PageBody, PageHeader } from '@/components/layout/PageHeader';
+import { apiErrorMessage } from '@/utils/apiErrors';
+import { cn } from '@/utils/cn';
+import { formatRupiah } from '@/utils/format';
+import { toInputDate, fromInputDate, daysFromNow } from '@/utils/date';
+import { PageBody, PageHeader } from '@/components/common/PageHeader';
 import { AlertDialog } from '@/components/ui/AlertDialog';
 import { Button } from '@/components/ui/Button';
 import { FormControl, Input, Switch } from '@/components/ui/Field';
-import { TrendingIcon } from '@/components/icons/LineIcons';
-import { generatePromoCode, promoSummary, rupiah } from './promoUtils';
+import { SectionCard } from '@/components/ui/SectionCard';
+import { TrendingIcon } from '@/components/ui/icons/DataIcons';
+import { generatePromoCode, promoSummary } from '@/features/settings/utils';
 
 const END_PRESETS: { label: string; days: number | null }[] = [
   { label: 'Tanpa batas', days: null },
@@ -22,33 +24,6 @@ const END_PRESETS: { label: string; days: number | null }[] = [
   { label: '14 hari', days: 14 },
   { label: '30 hari', days: 30 },
 ];
-
-/** ISO → "yyyy-mm-dd" (tanggal lokal) untuk <input type="date">. */
-const toInputDate = (iso: string | null) => {
-  if (!iso) return '';
-  const d = new Date(iso);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-};
-/** "yyyy-mm-dd" → ISO akhir hari itu (waktu perangkat). */
-const fromInputDate = (value: string): string | null => {
-  if (!value) return null;
-  const [y, m, d] = value.split('-').map(Number);
-  return new Date(y, m - 1, d, 23, 59, 59).toISOString();
-};
-const daysFromNow = (days: number) => {
-  const d = new Date();
-  d.setDate(d.getDate() + days);
-  return toInputDate(d.toISOString());
-};
-
-function SectionCard({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <section>
-      <p className="mb-2 ml-1 text-[11.5px] font-bold tracking-[0.08em] text-ink-3">{title.toUpperCase()}</p>
-      <div className="rounded-2xl border border-line bg-white p-5 shadow-card">{children}</div>
-    </section>
-  );
-}
 
 /** Buat atau ubah kode promo (pemilik toko). */
 export function PromoCodeForm({ editing }: { editing?: PromoCode }) {
@@ -130,7 +105,7 @@ export function PromoCodeForm({ editing }: { editing?: PromoCode }) {
         active,
       })
     : null;
-  const valueLabel = value > 0 ? (discountType === 'PERCENT' ? `${value}%` : rupiah(value)) : discountType === 'PERCENT' ? '0%' : 'Rp0';
+  const valueLabel = value > 0 ? (discountType === 'PERCENT' ? `${value}%` : formatRupiah(value)) : discountType === 'PERCENT' ? '0%' : 'Rp0';
 
   return (
     <>

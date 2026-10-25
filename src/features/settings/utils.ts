@@ -1,17 +1,14 @@
 import type { PromoCode } from '@/types/models';
-
-/** Formats a number as Rupiah, e.g. `Rp20.000`. */
-export const rupiah = (value: number) => `Rp${Math.round(value).toLocaleString('id-ID')}`;
+import { formatRupiah } from '@/utils/format';
+import type { PromoStatus } from '@/features/settings/types';
 
 /** Short description of a promo, e.g. "Diskon 10% · maks. Rp20.000 · min. belanja Rp100.000". */
 export function promoSummary(p: PromoCode): string {
-  const parts = [p.discountType === 'PERCENT' ? `Diskon ${p.discountValue}%` : `Potongan ${rupiah(p.discountValue)}`];
-  if (p.maxDiscountAmount) parts.push(`maks. ${rupiah(p.maxDiscountAmount)}`);
-  if (p.minPurchaseAmount) parts.push(`min. belanja ${rupiah(p.minPurchaseAmount)}`);
+  const parts = [p.discountType === 'PERCENT' ? `Diskon ${p.discountValue}%` : `Potongan ${formatRupiah(p.discountValue)}`];
+  if (p.maxDiscountAmount) parts.push(`maks. ${formatRupiah(p.maxDiscountAmount)}`);
+  if (p.minPurchaseAmount) parts.push(`min. belanja ${formatRupiah(p.minPurchaseAmount)}`);
   return parts.join(' · ');
 }
-
-export type PromoStatus = { label: string; tone: 'success' | 'warning' | 'neutral' | 'error' };
 
 /** Current state of a promo for its badge: active, scheduled, expired, used up or off. */
 export function promoStatus(p: PromoCode, now = Date.now()): PromoStatus {
@@ -21,10 +18,6 @@ export function promoStatus(p: PromoCode, now = Date.now()): PromoStatus {
   if (p.startsAt && new Date(p.startsAt).getTime() > now) return { label: 'Terjadwal', tone: 'warning' };
   return { label: 'Aktif', tone: 'success' };
 }
-
-/** Short Indonesian date, e.g. `13 Okt 2026`. */
-export const shortDate = (iso: string) =>
-  new Date(iso).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 
 /**
  * Suggests a short, readable promo code from the promo name and value,

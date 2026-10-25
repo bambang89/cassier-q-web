@@ -1,7 +1,7 @@
 'use client';
 
-import { PageBody, PageHeader } from '@/components/layout/PageHeader';
-import { CheckoutSettingsForm } from '@/features/settings/CheckoutSettingsForm';
+import { PageBody, PageHeader } from '@/components/common/PageHeader';
+import { CheckoutSettingsForm } from '@/features/settings/components/CheckoutSettingsForm';
 
 export default function CheckoutSettingsPage() {
   return (

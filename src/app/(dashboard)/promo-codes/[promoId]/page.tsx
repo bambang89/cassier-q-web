@@ -3,13 +3,13 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 
-import * as promoApi from '@/api/promoCodesApi';
 import type { PromoCode } from '@/types/models';
-import { PageHeader } from '@/components/layout/PageHeader';
+import * as promoApi from '@/services/promoCodesApi';
+import { PageHeader } from '@/components/common/PageHeader';
 import { LoadingBlock } from '@/components/ui/Spinner';
 import { EmptyState } from '@/components/ui/Display';
-import { DiscountIcon } from '@/components/icons/LineIcons';
-import { PromoCodeForm } from '@/features/settings/PromoCodeForm';
+import { DiscountIcon } from '@/components/ui/icons/DataIcons';
+import { PromoCodeForm } from '@/features/settings/components/PromoCodeForm';
 
 export default function PromoCodeEditPage() {
   const { promoId } = useParams<{ promoId: string }>();
