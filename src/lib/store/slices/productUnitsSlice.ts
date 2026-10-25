@@ -1,18 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import * as productsApi from '@/api/productsApi';
-import type { RegisterProductUnitPayload } from '@/api/productsApi';
-import type { ProductUnit } from '@/types/models';
-
-type AsyncStatus = 'idle' | 'loading' | 'succeeded' | 'failed';
-
-type ProductUnitsState = {
-  /** Di-cache per productId — dipakai berulang di POS/Restock/ProductForm dalam satu sesi tanpa fetch ulang. */
-  byProductId: Record<string, ProductUnit[]>;
-  statusByProductId: Record<string, AsyncStatus>;
-  registerStatus: AsyncStatus;
-  registerError: string | null;
-};
+import type { RegisterProductUnitPayload } from '@/types/api';
+import * as productsApi from '@/services/productsApi';
+import type { ProductUnitsState } from '@/lib/store/types';
 
 const initialState: ProductUnitsState = {
   byProductId: {},

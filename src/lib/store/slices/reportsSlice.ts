@@ -1,14 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import * as reportsApi from '@/api/reportsApi';
-import type { FetchSalesSummaryParams } from '@/api/reportsApi';
-import type { SalesSummary } from '@/types/models';
-
-type ReportsState = {
-  summary: SalesSummary | null;
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  error: string | null;
-};
+import type { FetchSalesSummaryParams } from '@/types/api';
+import * as reportsApi from '@/services/reportsApi';
+import type { ReportsState } from '@/lib/store/types';
 
 const initialState: ReportsState = {
   summary: null,

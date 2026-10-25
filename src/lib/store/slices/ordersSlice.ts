@@ -1,32 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import { apiErrorMessage } from '@/api/errors';
-import * as ordersApi from '@/api/ordersApi';
-import type { CreateOrderPayload, FetchOrdersParams } from '@/api/ordersApi';
-import type { CartItem, Order, Receipt } from '@/types/models';
-
-type AsyncStatus = 'idle' | 'loading' | 'succeeded' | 'failed';
-
-type OrdersState = {
-  items: Order[];
-  page: number;
-  totalPages: number;
-  totalElements: number;
-  status: AsyncStatus;
-  error: string | null;
-  /** Order yang sedang dibuka di OrderDetailScreen. */
-  current: Order | null;
-  currentStatus: AsyncStatus;
-  currentError: string | null;
-  createStatus: AsyncStatus;
-  createError: string | null;
-  voidStatus: AsyncStatus;
-  voidError: string | null;
-  /** Data struk resmi (GET /orders/{id}/receipt) untuk ReceiptScreen. */
-  receipt: Receipt | null;
-  receiptStatus: AsyncStatus;
-  receiptError: string | null;
-};
+import type { CartItem } from '@/types/models';
+import type { CreateOrderPayload, FetchOrdersParams } from '@/types/api';
+import * as ordersApi from '@/services/ordersApi';
+import type { OrdersState } from '@/lib/store/types';
+import { apiErrorMessage } from '@/utils/apiErrors';
 
 const initialState: OrdersState = {
   items: [],

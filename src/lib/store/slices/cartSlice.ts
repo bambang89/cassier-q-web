@@ -1,21 +1,10 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-import type { CartItem, Product } from '@/types/models';
+import type { CartItem } from '@/types/models';
+import type { CartState, AddItemPayload } from '@/lib/store/types';
 import { baseTotals, linePricing } from '@/utils/priceTiers';
 
-type CartState = {
-  items: CartItem[];
-  /** Pesanan (menu Pesanan) yang sedang dibayar lewat keranjang ini; ditandai lunas setelah checkout. */
-  customerOrder: { id: string; orderNumber: string; customerName: string } | null;
-};
-
 const initialState: CartState = { items: [], customerOrder: null };
-
-export interface AddItemPayload {
-  product: Product;
-  /** Kalau tidak diisi, dianggap dijual dalam base unit produknya. */
-  unit?: { unitId: string; unitName: string; conversionToBase: number };
-}
 
 const cartSlice = createSlice({
   name: 'cart',

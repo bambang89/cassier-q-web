@@ -1,19 +1,10 @@
 import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-import * as authApi from '@/api/authApi';
-import { ensureDeviceId, loadTokens } from '@/api/tokenStorage';
-import type { RegisterPayload } from '@/api/authApi';
 import type { User } from '@/types/models';
-
-type AsyncStatus = 'idle' | 'loading' | 'succeeded' | 'failed';
-
-type AuthState = {
-  user: User | null;
-  status: 'idle' | 'checking' | 'authenticating' | 'authenticated' | 'unauthenticated';
-  error: string | null;
-  passwordAction: { status: AsyncStatus; error: string | null };
-  revokeUserAction: { status: AsyncStatus; error: string | null };
-};
+import type { RegisterPayload } from '@/types/api';
+import * as authApi from '@/services/authApi';
+import { ensureDeviceId, loadTokens } from '@/services/tokenStorage';
+import type { AuthState } from '@/lib/store/types';
 
 const initialState: AuthState = {
   user: null,

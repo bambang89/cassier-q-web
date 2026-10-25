@@ -1,18 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import * as suppliersApi from '@/api/suppliersApi';
-import type { SupplierPayload } from '@/api/suppliersApi';
-import type { Supplier } from '@/types/models';
-
-type AsyncStatus = 'idle' | 'loading' | 'succeeded' | 'failed';
-
-type SuppliersState = {
-  items: Supplier[];
-  status: AsyncStatus;
-  error: string | null;
-  mutationStatus: AsyncStatus;
-  mutationError: string | null;
-};
+import type { SupplierPayload } from '@/types/api';
+import * as suppliersApi from '@/services/suppliersApi';
+import type { SuppliersState } from '@/lib/store/types';
 
 const initialState: SuppliersState = {
   items: [],

@@ -1,18 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import * as productsApi from '@/api/productsApi';
-import type { ProductPhotoFile } from '@/api/productsApi';
-import type { ProductPhoto } from '@/types/models';
-
-type AsyncStatus = 'idle' | 'loading' | 'succeeded' | 'failed';
-
-type ProductPhotosState = {
-  /** Di-cache per productId, sama seperti productUnitsSlice. */
-  byProductId: Record<string, ProductPhoto[]>;
-  statusByProductId: Record<string, AsyncStatus>;
-  mutationStatus: AsyncStatus;
-  mutationError: string | null;
-};
+import type { ProductPhotoFile } from '@/types/api';
+import * as productsApi from '@/services/productsApi';
+import type { ProductPhotosState } from '@/lib/store/types';
 
 const initialState: ProductPhotosState = {
   byProductId: {},

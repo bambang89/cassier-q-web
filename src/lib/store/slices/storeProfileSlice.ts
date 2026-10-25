@@ -1,18 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import * as storeApi from '@/api/storeApi';
-import type { UpdateStoreProfilePayload } from '@/api/storeApi';
 import type { StoreProfile } from '@/types/models';
-
-type AsyncStatus = 'idle' | 'loading' | 'succeeded' | 'failed';
-
-type StoreProfileState = {
-  profile: StoreProfile | null;
-  status: AsyncStatus;
-  error: string | null;
-  updateStatus: AsyncStatus;
-  updateError: string | null;
-};
+import type { UpdateStoreProfilePayload } from '@/types/api';
+import * as storeApi from '@/services/storeApi';
+import type { StoreProfileState } from '@/lib/store/types';
 
 const initialState: StoreProfileState = {
   profile: null,

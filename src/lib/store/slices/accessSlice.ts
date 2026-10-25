@@ -1,28 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import * as accessApi from '@/api/accessApi';
-import type { AdminStore, MenuAccessMatrix } from '@/api/accessApi';
-import { apiErrorMessage } from '@/api/errors';
-import { loadActiveStore, setActiveStore } from '@/api/storeContext';
-import type { ActiveStore } from '@/api/storeContext';
-import { logout, logoutAll, sessionExpired } from './authSlice';
-
-type LoadStatus = 'idle' | 'loading' | 'succeeded' | 'failed';
-
-interface AccessState {
-  /** Toko yang sedang dibantu SUPERADMIN (null = belum memilih). */
-  activeStore: ActiveStore | null;
-  activeStoreLoaded: boolean;
-  stores: AdminStore[];
-  storesStatus: LoadStatus;
-  /** null = belum dimuat / tanpa batasan; array = menu yang boleh tampil. */
-  allowedMenus: string[] | null;
-  /** null = tanpa batasan (Kepala Toko/Superadmin, atau belum dimuat); array = aksi yang diizinkan. */
-  allowedActions: string[] | null;
-  matrix: MenuAccessMatrix | null;
-  matrixStatus: LoadStatus;
-  error: string | null;
-}
+import type { ActiveStore } from '@/types/api';
+import * as accessApi from '@/services/accessApi';
+import { loadActiveStore, setActiveStore } from '@/services/storeContext';
+import { logout, logoutAll, sessionExpired } from '@/lib/store/slices/authSlice';
+import type { AccessState } from '@/lib/store/types';
+import { apiErrorMessage } from '@/utils/apiErrors';
 
 const initialState: AccessState = {
   activeStore: null,

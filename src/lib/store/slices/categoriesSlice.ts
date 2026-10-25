@@ -1,14 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import * as categoriesApi from '@/api/categoriesApi';
-import type { CategoryPayload } from '@/api/categoriesApi';
-import type { Category } from '@/types/models';
-
-type CategoriesState = {
-  items: Category[];
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  error: string | null;
-};
+import type { CategoryPayload } from '@/types/api';
+import * as categoriesApi from '@/services/categoriesApi';
+import type { CategoriesState } from '@/lib/store/types';
 
 const initialState: CategoriesState = {
   items: [],

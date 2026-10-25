@@ -1,21 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import { apiErrorMessage } from '@/api/errors';
-import * as productsApi from '@/api/productsApi';
-import type { FetchProductsParams, ProductPayload, ProductPhotoFile, RestockPayload } from '@/api/productsApi';
-import type { Product } from '@/types/models';
-
-type ProductsState = {
-  items: Product[];
-  search: string;
-  latestFetchId: string | null;
-  page: number;
-  totalPages: number;
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  error: string | null;
-  mutationStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
-  mutationError: string | null;
-};
+import type { FetchProductsParams, ProductPayload, ProductPhotoFile, RestockPayload } from '@/types/api';
+import * as productsApi from '@/services/productsApi';
+import type { ProductsState } from '@/lib/store/types';
+import { apiErrorMessage } from '@/utils/apiErrors';
 
 const initialState: ProductsState = {
   items: [],

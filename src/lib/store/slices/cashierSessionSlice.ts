@@ -1,13 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import * as cashierSessionsApi from '@/api/cashierSessionsApi';
-import type { CashierSession } from '@/types/models';
-
-type CashierSessionState = {
-  current: CashierSession | null;
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  error: string | null;
-};
+import * as cashierSessionsApi from '@/services/cashierSessionsApi';
+import type { CashierSessionState } from '@/lib/store/types';
 
 const initialState: CashierSessionState = {
   current: null,

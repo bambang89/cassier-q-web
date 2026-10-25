@@ -1,18 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import * as employeesApi from '@/api/employeesApi';
-import type { CreateEmployeePayload, UpdateEmployeePayload } from '@/api/employeesApi';
-import type { Employee } from '@/types/models';
-
-type AsyncStatus = 'idle' | 'loading' | 'succeeded' | 'failed';
-
-type EmployeesState = {
-  items: Employee[];
-  status: AsyncStatus;
-  error: string | null;
-  mutationStatus: AsyncStatus;
-  mutationError: string | null;
-};
+import type { CreateEmployeePayload, UpdateEmployeePayload } from '@/types/api';
+import * as employeesApi from '@/services/employeesApi';
+import type { EmployeesState } from '@/lib/store/types';
 
 const initialState: EmployeesState = {
   items: [],

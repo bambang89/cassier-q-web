@@ -1,13 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import * as rolesApi from '@/api/rolesApi';
-import type { Role } from '@/types/models';
-
-type RolesState = {
-  items: Role[];
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  error: string | null;
-};
+import * as rolesApi from '@/services/rolesApi';
+import type { RolesState } from '@/lib/store/types';
 
 const initialState: RolesState = {
   items: [],

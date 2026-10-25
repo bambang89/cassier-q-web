@@ -1,14 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import * as unitsApi from '@/api/unitsApi';
-import type { UnitPayload } from '@/api/unitsApi';
-import type { Unit } from '@/types/models';
-
-type UnitsState = {
-  items: Unit[];
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  error: string | null;
-};
+import type { UnitPayload } from '@/types/api';
+import * as unitsApi from '@/services/unitsApi';
+import type { UnitsState } from '@/lib/store/types';
 
 const initialState: UnitsState = {
   items: [],

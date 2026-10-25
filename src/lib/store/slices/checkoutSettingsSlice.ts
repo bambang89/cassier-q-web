@@ -1,14 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import * as settingsApi from '@/api/settingsApi';
-import type { UpdateCheckoutSettingsPayload } from '@/api/settingsApi';
-import { apiErrorMessage } from '@/api/errors';
-import type { CheckoutSettings } from '@/types/models';
-
-type CheckoutSettingsState = {
-  settings: CheckoutSettings | null;
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
-};
+import type { UpdateCheckoutSettingsPayload } from '@/types/api';
+import * as settingsApi from '@/services/settingsApi';
+import type { CheckoutSettingsState } from '@/lib/store/types';
+import { apiErrorMessage } from '@/utils/apiErrors';
 
 const initialState: CheckoutSettingsState = { settings: null, status: 'idle' };
 

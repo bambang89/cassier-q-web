@@ -1,23 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import * as customersApi from '@/api/customersApi';
-import type { CustomerPayload } from '@/api/customersApi';
-import type { Customer, LedgerEntry } from '@/types/models';
-
-type AsyncStatus = 'idle' | 'loading' | 'succeeded' | 'failed';
-
-type CustomersState = {
-  items: Customer[];
-  status: AsyncStatus;
-  error: string | null;
-  mutationStatus: AsyncStatus;
-  mutationError: string | null;
-  /** Riwayat hutang/pembayaran, di-cache per customerId. */
-  ledgerByCustomerId: Record<string, LedgerEntry[]>;
-  ledgerStatusByCustomerId: Record<string, AsyncStatus>;
-  paymentStatus: AsyncStatus;
-  paymentError: string | null;
-};
+import type { CustomerPayload } from '@/types/api';
+import * as customersApi from '@/services/customersApi';
+import type { CustomersState } from '@/lib/store/types';
 
 const initialState: CustomersState = {
   items: [],

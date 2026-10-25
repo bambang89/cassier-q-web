@@ -1,31 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import * as purchaseOrdersApi from '@/api/purchaseOrdersApi';
-import type {
-  CreatePurchaseOrderPayload,
-  FetchPurchaseOrdersParams,
-  ReceiveItemPayload,
-} from '@/api/purchaseOrdersApi';
-import type { PurchaseOrder } from '@/types/models';
-
-type AsyncStatus = 'idle' | 'loading' | 'succeeded' | 'failed';
-
-type PurchaseOrdersState = {
-  items: PurchaseOrder[];
-  page: number;
-  totalPages: number;
-  totalElements: number;
-  status: AsyncStatus;
-  error: string | null;
-  current: PurchaseOrder | null;
-  currentStatus: AsyncStatus;
-  createStatus: AsyncStatus;
-  createError: string | null;
-  receiveStatus: AsyncStatus;
-  receiveError: string | null;
-  cancelStatus: AsyncStatus;
-  cancelError: string | null;
-};
+import type { CreatePurchaseOrderPayload, ReceiveItemPayload, FetchPurchaseOrdersParams } from '@/types/api';
+import * as purchaseOrdersApi from '@/services/purchaseOrdersApi';
+import type { PurchaseOrdersState } from '@/lib/store/types';
 
 const initialState: PurchaseOrdersState = {
   items: [],
