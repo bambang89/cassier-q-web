@@ -1,5 +1,5 @@
-import { apiClient } from './client';
 import type { BundlePayload, Product } from '@/types/models';
+import { apiClient } from '@/lib/apiClient';
 
 // Paket bundling — every call is for the store head (Kepala Toko) only.
 

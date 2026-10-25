@@ -1,11 +1,10 @@
+import type { ActiveStore } from '@/types/api';
 import * as SecureStore from '@/lib/secureStore';
 
 // Toko yang sedang dibantu SUPERADMIN. Disimpan di memori supaya interceptor
 // axios bisa membacanya secara sinkron, dan di SecureStore supaya pilihan
 // bertahan saat app dibuka ulang.
 const ACTIVE_STORE_KEY = 'cassierq.superadmin.activeStore';
-
-export type ActiveStore = { id: string; name: string };
 
 let activeStore: ActiveStore | null = null;
 

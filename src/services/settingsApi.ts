@@ -1,11 +1,6 @@
-import { apiClient } from './client';
-import type { CheckoutSettings, PaymentMethod } from '@/types/models';
-
-export interface UpdateCheckoutSettingsPayload {
-  enabledPaymentMethods: PaymentMethod[];
-  defaultPaymentMethod: PaymentMethod;
-  taxEnabled: boolean;
-}
+import type { CheckoutSettings } from '@/types/models';
+import type { UpdateCheckoutSettingsPayload } from '@/types/api';
+import { apiClient } from '@/lib/apiClient';
 
 /** Accepted payment methods, default method and PPN of the active store. */
 export async function fetchCheckoutSettings(): Promise<CheckoutSettings> {

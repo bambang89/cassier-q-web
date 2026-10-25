@@ -1,5 +1,5 @@
-import { apiClient } from './client';
 import type { PromoCode, PromoCodePayload, PromoQuote } from '@/types/models';
+import { apiClient } from '@/lib/apiClient';
 
 /** All promo codes of the store (owner only). */
 export async function fetchPromoCodes(): Promise<PromoCode[]> {

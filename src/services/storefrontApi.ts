@@ -1,14 +1,8 @@
 import axios from 'axios';
 
-import { apiClient } from './client';
+import type { PublicOrderRequest, PublicOrderStatus, PublicStorefront, StorefrontLayout, StorefrontSettings } from '@/types/storefront';
 import { env } from '@/config/env';
-import type {
-  PublicOrderRequest,
-  PublicOrderStatus,
-  PublicStorefront,
-  StorefrontLayout,
-  StorefrontSettings,
-} from '@/types/storefront';
+import { apiClient } from '@/lib/apiClient';
 
 // ── Pemilik toko (perlu login) ────────────────────────────────────────
 

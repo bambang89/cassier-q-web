@@ -1,15 +1,6 @@
-import { apiClient } from './client';
-import type { CartItem, Order, Page, PaymentMethod, Receipt } from '@/types/models';
-
-export interface CreateOrderPayload {
-  paymentMethod: PaymentMethod;
-  paymentAmount: number;
-  discountAmount?: number;
-  taxAmount?: number;
-  customerId?: string;
-  /** Server menghitung ulang potongannya; discountAmount di atas hanya diskon manual. */
-  promoCode?: string;
-}
+import type { CartItem, Order, Page, Receipt } from '@/types/models';
+import type { CreateOrderPayload, FetchOrdersParams } from '@/types/api';
+import { apiClient } from '@/lib/apiClient';
 
 /**
  * @param idempotencyKey pakai key yang sama untuk retry checkout yang sama
@@ -34,11 +25,6 @@ export async function createOrder(
     { headers: { 'Idempotency-Key': idempotencyKey } },
   );
   return data;
-}
-
-export interface FetchOrdersParams {
-  page?: number;
-  size?: number;
 }
 
 export async function fetchOrders({ page = 0, size = 20 }: FetchOrdersParams = {}): Promise<Page<Order>> {

@@ -1,6 +1,6 @@
-import { apiClient } from './client';
 import type { Page } from '@/types/models';
 import type { CustomerOrder, CustomerOrderStatus, OrderCounts } from '@/types/storefront';
+import { apiClient } from '@/lib/apiClient';
 
 /** status: ACTIVE (default) | DONE | satu status. */
 export async function fetchCustomerOrders(status = 'ACTIVE', page = 0, size = 50): Promise<Page<CustomerOrder>> {

@@ -1,18 +1,10 @@
-import { apiClient } from './client';
 import type { StoreProfile } from '@/types/models';
+import type { UpdateStoreProfilePayload } from '@/types/api';
+import { apiClient } from '@/lib/apiClient';
 
 export async function fetchStoreProfile(): Promise<StoreProfile> {
   const { data } = await apiClient.get<StoreProfile>('/store');
   return data;
-}
-
-export interface UpdateStoreProfilePayload {
-  storeName?: string;
-  address?: string;
-  province?: string;
-  city?: string;
-  phone?: string;
-  settings?: Record<string, string>;
 }
 
 /** Partial update — cuma field yang dikirim yang berubah. */

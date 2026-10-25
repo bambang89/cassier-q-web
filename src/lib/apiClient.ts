@@ -1,11 +1,11 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
+import type { TokenSet, SessionExpiredHandler, AuthResponseBody } from '@/types/api';
 import { env } from '@/config/env';
 import { appVersion, deviceOsVersion, deviceType } from '@/config/deviceInfo';
-import { clearTokens, ensureDeviceId, loadTokens, saveTokens, type TokenSet } from './tokenStorage';
-import { getActiveStoreId } from './storeContext';
+import { clearTokens, ensureDeviceId, loadTokens, saveTokens } from '@/services/tokenStorage';
+import { getActiveStoreId } from '@/services/storeContext';
 
-type SessionExpiredHandler = () => void;
 let onSessionExpired: SessionExpiredHandler | null = null;
 export function setSessionExpiredHandler(handler: SessionExpiredHandler | null): void {
   onSessionExpired = handler;
@@ -37,13 +37,6 @@ const PUBLIC_AUTH_PATHS = [
 const refreshClient = axios.create({ baseURL: env.apiBaseUrl, timeout: 15000 });
 
 let refreshPromise: Promise<TokenSet> | null = null;
-
-type AuthResponseBody = {
-  accessToken: string;
-  refreshToken: string;
-  /** epoch millis */
-  expiresAt: number;
-};
 
 async function refreshAccessToken(): Promise<TokenSet> {
   const current = await loadTokens();

@@ -1,18 +1,12 @@
-import * as SecureStore from '@/lib/secureStore';
-
+import type { TokenSet } from '@/types/api';
 import { generateDeviceId } from '@/config/deviceInfo';
+import * as SecureStore from '@/lib/secureStore';
 
 const ACCESS_TOKEN_KEY = 'cassierq.auth.accessToken';
 const REFRESH_TOKEN_KEY = 'cassierq.auth.refreshToken';
 const EXPIRES_AT_KEY = 'cassierq.auth.expiresAt';
 const DEVICE_ID_KEY = 'cassierq.session.deviceId';
 const REMEMBERED_USERNAME_KEY = 'cassierq.auth.rememberedUsername';
-
-export type TokenSet = {
-  accessToken: string;
-  refreshToken: string;
-  expiresAt: number;
-};
 
 export async function saveTokens(tokens: TokenSet): Promise<void> {
   await Promise.all([

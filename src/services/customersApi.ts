@@ -1,13 +1,6 @@
-import { apiClient } from './client';
 import type { Customer, LedgerEntry } from '@/types/models';
-
-export interface CustomerPayload {
-  customerCode: string;
-  name: string;
-  phone?: string;
-  address?: string;
-  creditLimit?: number;
-}
+import type { CustomerPayload } from '@/types/api';
+import { apiClient } from '@/lib/apiClient';
 
 export async function fetchCustomers(): Promise<Customer[]> {
   const { data } = await apiClient.get<Customer[]>('/customers');

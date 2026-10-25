@@ -1,5 +1,6 @@
-import { apiClient } from './client';
 import type { CashierSession } from '@/types/models';
+import { apiClient } from '@/lib/apiClient';
+import { isNotFound } from '@/utils/apiErrors';
 
 export async function fetchCurrentSession(): Promise<CashierSession | null> {
   try {
@@ -9,15 +10,6 @@ export async function fetchCurrentSession(): Promise<CashierSession | null> {
     if (isNotFound(error)) return null;
     throw error;
   }
-}
-
-function isNotFound(error: unknown): boolean {
-  return (
-    typeof error === 'object' &&
-    error !== null &&
-    'response' in error &&
-    (error as { response?: { status?: number } }).response?.status === 404
-  );
 }
 
 export async function openSession(openingCash: number): Promise<CashierSession> {

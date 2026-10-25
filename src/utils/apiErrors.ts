@@ -18,3 +18,13 @@ export function apiErrorMessage(error: unknown, fallback: string): string {
 export function newIdempotencyKey(): string {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}${Math.random().toString(36).slice(2)}`;
 }
+
+/** True bila error axios berstatus 404. */
+export function isNotFound(error: unknown): boolean {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'response' in error &&
+    (error as { response?: { status?: number } }).response?.status === 404
+  );
+}

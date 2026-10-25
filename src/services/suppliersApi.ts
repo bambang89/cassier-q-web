@@ -1,14 +1,6 @@
-import { apiClient } from './client';
 import type { Supplier } from '@/types/models';
-
-export interface SupplierPayload {
-  supplierCode: string;
-  supplierName: string;
-  contactPerson?: string;
-  phone?: string;
-  email?: string;
-  address?: string;
-}
+import type { SupplierPayload } from '@/types/api';
+import { apiClient } from '@/lib/apiClient';
 
 export async function fetchSuppliers(): Promise<Supplier[]> {
   const { data } = await apiClient.get<Supplier[]>('/suppliers');

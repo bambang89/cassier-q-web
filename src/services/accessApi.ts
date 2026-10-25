@@ -1,29 +1,5 @@
-import { apiClient } from './client';
-
-export type AdminStore = {
-  id: string;
-  storeCode: string;
-  storeName: string;
-  address: string | null;
-  city: string | null;
-  phone: string | null;
-  status: string;
-  parentStoreId: string | null;
-};
-
-/** `actions` = izin aksi di dalam menu, mis. "products.create" (semua aksi untuk Kepala Toko). */
-export type MyMenuAccess = { restricted: boolean; menus: string[]; actions?: string[] };
-
-export type ActionDef = { code: string; label: string };
-
-export type MenuAccessMatrix = {
-  menus: string[];
-  roles: Record<string, string[]>;
-  /** Menu → aksi yang bisa diatur; menu yang tidak ada di sini hanya bisa dilihat. */
-  actions?: Record<string, ActionDef[]>;
-  /** Role staf → aksi yang diizinkan. */
-  roleActions?: Record<string, string[]>;
-};
+import type { AdminStore, MyMenuAccess, MenuAccessMatrix } from '@/types/api';
+import { apiClient } from '@/lib/apiClient';
 
 /** SUPERADMIN: semua toko di aplikasi. */
 export async function fetchAdminStores(): Promise<AdminStore[]> {

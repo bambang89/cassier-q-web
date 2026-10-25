@@ -1,11 +1,8 @@
-import { apiClient } from './client';
-import type { Page, PriceTier, Product, ProductPhoto, ProductUnit, Stock } from '@/types/models';
-
-export interface FetchProductsParams {
-  search?: string;
-  page?: number;
-  size?: number;
-}
+import type { Page, PriceTier, Product, ProductPhoto, ProductUnit } from '@/types/models';
+import type { FetchProductsParams, ProductPayload, ProductPhotoFile, RestockPayload, RegisterProductUnitPayload } from '@/types/api';
+import type { Stock } from '@/types/inventory';
+import { apiClient } from '@/lib/apiClient';
+import { isNotFound } from '@/utils/apiErrors';
 
 export async function fetchProducts({ search, page = 0, size = 50 }: FetchProductsParams = {}): Promise<
   Page<Product>
@@ -26,24 +23,6 @@ export async function fetchProductByBarcode(barcode: string): Promise<Product | 
   }
 }
 
-function isNotFound(error: unknown): boolean {
-  return typeof error === 'object' && error !== null && 'response' in error &&
-    (error as { response?: { status?: number } }).response?.status === 404;
-}
-
-export interface ProductPayload {
-  sku: string;
-  barcode?: string;
-  productName: string;
-  categoryId: string;
-  brand?: string;
-  description?: string;
-  imageUrl?: string;
-  baseUnitId: string;
-  sellingPrice: number;
-  costPrice?: number;
-}
-
 export async function createProduct(payload: ProductPayload): Promise<Product> {
   const { data } = await apiClient.post<Product>('/products', payload);
   return data;
@@ -57,9 +36,6 @@ export async function updateProduct(id: string, payload: ProductPayload): Promis
 export async function deleteProduct(id: string): Promise<void> {
   await apiClient.delete(`/products/${id}`);
 }
-
-/** Di web: File dari <input type="file">. */
-export type ProductPhotoFile = File;
 
 /** Upload/ganti foto produk (JPG/PNG/WEBP, maks 5MB) — balikan produk lengkap dgn imageUrl baru. */
 export async function uploadProductPhoto(id: string, file: ProductPhotoFile): Promise<Product> {
@@ -87,12 +63,6 @@ export async function deleteProductPhoto(productId: string, photoId: string): Pr
   await apiClient.delete(`/products/${productId}/photos/${photoId}`);
 }
 
-export interface RestockPayload {
-  unitId: string;
-  quantity: number;
-  notes?: string;
-}
-
 export async function restockProduct(id: string, payload: RestockPayload): Promise<Stock> {
   const { data } = await apiClient.post<Stock>(`/products/${id}/restock`, payload);
   return data;
@@ -102,13 +72,6 @@ export async function restockProduct(id: string, payload: RestockPayload): Promi
 export async function fetchProductUnits(productId: string): Promise<ProductUnit[]> {
   const { data } = await apiClient.get<ProductUnit[]>(`/products/${productId}/units`);
   return data;
-}
-
-export interface RegisterProductUnitPayload {
-  unitId: string;
-  conversionToBase: number;
-  purchaseUnit?: boolean;
-  saleUnit?: boolean;
 }
 
 /** Daftarkan satuan alternatif + rasio konversinya (pasangan tulis dari /convert). */

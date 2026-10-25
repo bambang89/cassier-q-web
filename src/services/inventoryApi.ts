@@ -1,14 +1,6 @@
-import { apiClient } from './client';
-import type {
-  BadStockItem,
-  BadStockReason,
-  BadStockReport,
-  BadStockStatus,
-  OpnameResult,
-  Page,
-  StockMovementItem,
-  StockSummary,
-} from '@/types/models';
+import type { Page } from '@/types/models';
+import type { StockSummary, StockMovementItem, OpnameResult, BadStockReason, BadStockStatus, BadStockItem, BadStockReport } from '@/types/inventory';
+import { apiClient } from '@/lib/apiClient';
 
 /** Stock of every product with status (habis/menipis/aman) and value at cost. */
 export async function fetchStock(): Promise<StockSummary> {

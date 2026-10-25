@@ -1,7 +1,8 @@
-import { apiClient } from './client';
-import { clearTokens, loadTokens, saveTokens, type TokenSet } from './tokenStorage';
 import type { AuthResponse, User } from '@/types/models';
-import { setActiveStore } from './storeContext';
+import type { RegisterPayload, TokenSet } from '@/types/api';
+import { clearTokens, loadTokens, saveTokens } from '@/services/tokenStorage';
+import { setActiveStore } from '@/services/storeContext';
+import { apiClient } from '@/lib/apiClient';
 
 async function persistAuthResponse(data: AuthResponse): Promise<TokenSet> {
   const tokens: TokenSet = {
@@ -17,19 +18,6 @@ export async function login(username: string, password: string): Promise<User> {
   const { data } = await apiClient.post<AuthResponse>('/auth/login', { username, password });
   await persistAuthResponse(data);
   return data.user;
-}
-
-export interface RegisterPayload {
-  storeCode: string;
-  storeName: string;
-  username: string;
-  name: string;
-  email: string;
-  password: string;
-  /** Opsional — bisa dilengkapi belakangan di menu Outlet. */
-  address?: string;
-  city?: string;
-  phone?: string;
 }
 
 export async function register(payload: RegisterPayload): Promise<User> {

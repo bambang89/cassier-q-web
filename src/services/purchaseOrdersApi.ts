@@ -1,30 +1,6 @@
-import { apiClient } from './client';
 import type { Page, PurchaseOrder } from '@/types/models';
-
-export interface CreatePurchaseOrderItemPayload {
-  productId: string;
-  unitId: string;
-  quantity: number;
-  unitCost: number;
-}
-
-export interface CreatePurchaseOrderPayload {
-  supplierId: string;
-  /** Format YYYY-MM-DD. */
-  expectedDate?: string;
-  notes?: string;
-  items: CreatePurchaseOrderItemPayload[];
-}
-
-export interface ReceiveItemPayload {
-  purchaseOrderItemId: string;
-  receivedQuantity: number;
-}
-
-export interface FetchPurchaseOrdersParams {
-  page?: number;
-  size?: number;
-}
+import type { CreatePurchaseOrderPayload, ReceiveItemPayload, FetchPurchaseOrdersParams } from '@/types/api';
+import { apiClient } from '@/lib/apiClient';
 
 export async function fetchPurchaseOrders({
   page = 0,

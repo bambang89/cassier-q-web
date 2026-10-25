@@ -1,14 +1,10 @@
-import { apiClient } from './client';
 import type { Unit } from '@/types/models';
+import type { UnitPayload } from '@/types/api';
+import { apiClient } from '@/lib/apiClient';
 
 export async function fetchUnits(): Promise<Unit[]> {
   const { data } = await apiClient.get<Unit[]>('/units');
   return data;
-}
-
-export interface UnitPayload {
-  unitCode: string;
-  unitName: string;
 }
 
 export async function createUnit(payload: UnitPayload): Promise<Unit> {

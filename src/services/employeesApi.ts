@@ -1,26 +1,6 @@
-import { apiClient } from './client';
 import type { Employee } from '@/types/models';
-
-export interface CreateEmployeePayload {
-  name: string;
-  username: string;
-  email?: string;
-  phone?: string;
-  password: string;
-  /** KEPALA_TOKO | PRODUCT | GUDANG | KASIR */
-  roleCode: string;
-  nationalId?: string;
-  employeeNumber?: string;
-}
-
-export interface UpdateEmployeePayload {
-  name: string;
-  email?: string;
-  phone?: string;
-  roleCode: string;
-  nationalId?: string;
-  employeeNumber?: string;
-}
+import type { CreateEmployeePayload, UpdateEmployeePayload } from '@/types/api';
+import { apiClient } from '@/lib/apiClient';
 
 export async function fetchEmployees(): Promise<Employee[]> {
   const { data } = await apiClient.get<Employee[]>('/employees');
