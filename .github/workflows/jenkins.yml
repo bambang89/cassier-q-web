@@ -1,0 +1,59 @@
+name: Jenkins Build
+
+on:
+  push:
+    branches: [main, master]
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Branch atau tag yang di-build ulang di Jenkins (mis. main atau v0.1.0). Akan di-deploy ulang.'
+        required: true
+        default: main
+
+concurrency:
+  group: jenkins-${{ inputs.ref || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  jenkins:
+    name: Jenkins » ${{ inputs.ref || github.ref_name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github/scripts
+
+      - name: Cek secrets Jenkins
+        env:
+          JENKINS_URL: ${{ secrets.JENKINS_URL }}
+          JENKINS_USER: ${{ secrets.JENKINS_USER }}
+          JENKINS_API_TOKEN: ${{ secrets.JENKINS_API_TOKEN }}
+        run: |
+          if [ -z "$JENKINS_URL" ] || [ -z "$JENKINS_USER" ] || [ -z "$JENKINS_API_TOKEN" ]; then
+            echo "::error title=Secrets belum diisi::Isi JENKINS_URL, JENKINS_USER, JENKINS_API_TOKEN di Settings → Secrets and variables → Actions (sama dengan repo springboot-cassier-q-api)."
+            exit 1
+          fi
+
+      - name: Build di Jenkins
+        env:
+          JENKINS_URL: ${{ secrets.JENKINS_URL }}
+          JENKINS_USER: ${{ secrets.JENKINS_USER }}
+          JENKINS_API_TOKEN: ${{ secrets.JENKINS_API_TOKEN }}
+          JOB: cassier-q-web
+          REF: ${{ inputs.ref || github.ref_name }}
+          # Jenkins memindai repo ini tiap 5 menit, jadi tunggu sampai 7 menit sebelum memicu build sendiri.
+          FOLLOW_TIMEOUT: '420'
+          # Push pertama: ikuti build yang dimulai Jenkins. Re-run / manual: build baru.
+          MODE: ${{ (github.event_name == 'workflow_dispatch' || github.run_attempt > 1) && 'trigger' || 'follow' }}
+        # Commit SHA (not the annotated tag object) — that's what Jenkins records
+        run: SHA=$(git rev-parse HEAD) .github/scripts/jenkins-build.sh
+
+      - name: Upload log Jenkins
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jenkins-log-${{ github.run_id }}-${{ github.run_attempt }}
+          path: jenkins.log
+          if-no-files-found: ignore
