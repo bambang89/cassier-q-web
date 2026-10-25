@@ -2,16 +2,15 @@
 
 import { useState } from 'react';
 
-import { PageBody, PageHeader } from '@/components/layout/PageHeader';
-import { cn } from '@/lib/cn';
-import { StockTab } from '@/features/inventory/StockTab';
-import { MovementsTab } from '@/features/inventory/MovementsTab';
-import { OpnameTab } from '@/features/inventory/OpnameTab';
-import { BadStockTab } from '@/features/inventory/BadStockTab';
+import { cn } from '@/utils/cn';
+import { PageBody, PageHeader } from '@/components/common/PageHeader';
+import { StockTab } from '@/features/inventory/components/StockTab';
+import { MovementsTab } from '@/features/inventory/components/MovementsTab';
+import { OpnameTab } from '@/features/inventory/components/OpnameTab';
+import { BadStockTab } from '@/features/inventory/components/BadStockTab';
+import type { InventoryTab } from '@/features/inventory/types';
 
-type TabKey = 'stock' | 'movements' | 'opname' | 'badStock';
-
-const TABS: { key: TabKey; label: string }[] = [
+const TABS: { key: InventoryTab; label: string }[] = [
   { key: 'stock', label: 'Stok' },
   { key: 'movements', label: 'Mutasi' },
   { key: 'opname', label: 'Opname' },
@@ -20,7 +19,7 @@ const TABS: { key: TabKey; label: string }[] = [
 
 /** Inventori: stok, mutasi, stok opname, dan bad stock. */
 export default function InventoryPage() {
-  const [tab, setTab] = useState<TabKey>('stock');
+  const [tab, setTab] = useState<InventoryTab>('stock');
 
   return (
     <>

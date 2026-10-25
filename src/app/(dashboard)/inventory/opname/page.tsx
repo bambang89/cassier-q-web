@@ -3,16 +3,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import * as inventoryApi from '@/api/inventoryApi';
-import { apiErrorMessage } from '@/api/errors';
-import type { StockItem } from '@/types/models';
+import type { StockItem } from '@/types/inventory';
+import * as inventoryApi from '@/services/inventoryApi';
 import { Alert } from '@/lib/alert';
-import { cn } from '@/lib/cn';
-import { PageHeader } from '@/components/layout/PageHeader';
+import { apiErrorMessage } from '@/utils/apiErrors';
+import { cn } from '@/utils/cn';
+import { formatRupiah, formatQty } from '@/utils/format';
+import { PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { LoadingBlock } from '@/components/ui/Spinner';
-import { qty, rupiah } from '@/features/inventory/labels';
-import { SearchBox } from '@/features/inventory/shared';
+import { SearchBox } from '@/features/inventory/components/shared';
 
 /**
  * Hitung stok: isi jumlah fisik produk yang dihitung; hanya baris yang berubah
@@ -52,7 +52,7 @@ export default function StockOpnamePage() {
   const valueDiff = changes.reduce((sum, { item, counted }) => sum + (counted - item.stock) * (item.costPrice ?? 0), 0);
 
   const submit = () => {
-    Alert.alert('Simpan stok opname?', `${changes.length} produk akan disesuaikan dengan jumlah fisik (selisih nilai ${rupiah(valueDiff)}).`, [
+    Alert.alert('Simpan stok opname?', `${changes.length} produk akan disesuaikan dengan jumlah fisik (selisih nilai ${formatRupiah(valueDiff)}).`, [
       { text: 'Batal', style: 'cancel' },
       {
         text: 'Simpan',
@@ -97,10 +97,10 @@ export default function StockOpnamePage() {
                     <div className="min-w-0 flex-1">
                       <p className="truncate font-semibold text-ink">{item.productName}</p>
                       <p className="text-[12.5px] text-ink-3">
-                        Sistem: {qty(item.stock)} {item.baseUnitName}
+                        Sistem: {formatQty(item.stock)} {item.baseUnitName}
                         {diff !== 0 ? (
                           <span className={cn('ml-2 font-bold', diff > 0 ? 'text-success-700' : 'text-error-600')}>
-                            {`${diff > 0 ? '+' : '−'}${qty(Math.abs(diff))}`}
+                            {`${diff > 0 ? '+' : '−'}${formatQty(Math.abs(diff))}`}
                           </span>
                         ) : null}
                       </p>
@@ -108,7 +108,7 @@ export default function StockOpnamePage() {
                     <input
                       value={typed ?? ''}
                       onChange={(e) => setCounts((prev) => ({ ...prev, [item.productId]: e.target.value.replace(/[^0-9.]/g, '') }))}
-                      placeholder={qty(item.stock)}
+                      placeholder={formatQty(item.stock)}
                       inputMode="decimal"
                       aria-label={`Jumlah fisik ${item.productName}`}
                       className={cn(

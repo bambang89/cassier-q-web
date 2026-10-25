@@ -2,8 +2,8 @@
 
 import type { ReactNode } from 'react';
 
-import { cn } from '@/lib/cn';
-import { SearchIcon } from '@/components/icons/LineIcons';
+import { cn } from '@/utils/cn';
+import { SearchIcon } from '@/components/ui/icons/ActionIcons';
 
 /** Chip filter dengan jumlah opsional (aktif = navy, seperti di mobile). */
 export function FilterChips<T extends string>({

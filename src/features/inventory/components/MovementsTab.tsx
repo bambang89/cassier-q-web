@@ -2,15 +2,17 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
-import * as inventoryApi from '@/api/inventoryApi';
-import type { StockMovementItem } from '@/types/models';
-import { cn } from '@/lib/cn';
+import type { StockMovementItem } from '@/types/inventory';
+import * as inventoryApi from '@/services/inventoryApi';
+import { cn } from '@/utils/cn';
+import { formatQty } from '@/utils/format';
+import { formatDateTimeShort } from '@/utils/date';
 import { EmptyState } from '@/components/ui/Display';
 import { Button } from '@/components/ui/Button';
 import { LoadingBlock } from '@/components/ui/Spinner';
-import { HistoryIcon } from '@/components/icons/LineIcons';
-import { MOVEMENT_TYPES, dateTime, qty } from './labels';
-import { DataTable, FilterChips } from './shared';
+import { HistoryIcon } from '@/components/ui/icons/DataIcons';
+import { MOVEMENT_TYPES } from '@/features/inventory/utils';
+import { DataTable, FilterChips } from '@/features/inventory/components/shared';
 
 const TYPES = [
   { value: '', label: 'Semua' },
@@ -86,15 +88,15 @@ export function MovementsTab() {
                   </td>
                   <td className="px-3 py-3 text-ink-2">{label}</td>
                   <td className="px-3 py-3 text-ink-2">
-                    {dateTime(item.createdAt)}
+                    {formatDateTimeShort(item.createdAt)}
                     {item.createdBy ? <span className="block text-[12px] text-ink-3">{item.createdBy}</span> : null}
                   </td>
                   <td className={cn('px-3 py-3 text-right font-bold', incoming ? 'text-success-700' : 'text-error-600')}>
                     {incoming ? '+' : '−'}
-                    {qty(Math.abs(delta))}
+                    {formatQty(Math.abs(delta))}
                   </td>
                   <td className="px-5 py-3 text-right text-ink-3">
-                    {qty(item.stockBefore)} → <span className="font-semibold text-ink">{qty(item.stockAfter)}</span>
+                    {formatQty(item.stockBefore)} → <span className="font-semibold text-ink">{formatQty(item.stockAfter)}</span>
                   </td>
                 </tr>
               ))}
@@ -114,7 +116,7 @@ export function MovementsTab() {
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-semibold text-ink">{item.productName}</p>
                   <p className="truncate text-[12.5px] text-ink-2">
-                    {label} · {dateTime(item.createdAt)}
+                    {label} · {formatDateTimeShort(item.createdAt)}
                     {item.createdBy ? ` · ${item.createdBy}` : ''}
                   </p>
                   {item.notes ? <p className="truncate text-[12.5px] text-ink-3">{item.notes}</p> : null}
@@ -122,10 +124,10 @@ export function MovementsTab() {
                 <div className="text-right">
                   <p className={cn('font-bold', incoming ? 'text-success-700' : 'text-error-600')}>
                     {incoming ? '+' : '−'}
-                    {qty(Math.abs(delta))}
+                    {formatQty(Math.abs(delta))}
                   </p>
                   <p className="text-[12.5px] text-ink-3">
-                    {qty(item.stockBefore)} → {qty(item.stockAfter)}
+                    {formatQty(item.stockBefore)} → {formatQty(item.stockAfter)}
                   </p>
                 </div>
               </div>

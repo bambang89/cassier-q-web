@@ -3,14 +3,15 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import * as inventoryApi from '@/api/inventoryApi';
-import type { StockMovementItem } from '@/types/models';
+import type { StockMovementItem } from '@/types/inventory';
+import * as inventoryApi from '@/services/inventoryApi';
 import { usePermissions } from '@/hooks/usePermissions';
-import { cn } from '@/lib/cn';
+import { cn } from '@/utils/cn';
+import { formatQty } from '@/utils/format';
+import { formatDateTimeShort } from '@/utils/date';
 import { Button } from '@/components/ui/Button';
 import { LoadingBlock } from '@/components/ui/Spinner';
-import { ClipboardIcon } from '@/components/icons/LineIcons';
-import { dateTime, qty } from './labels';
+import { ClipboardIcon } from '@/components/ui/icons/NavIcons';
 
 /** Mulai hitung stok, dan lihat penyesuaian opname terakhir. */
 export function OpnameTab() {
@@ -69,17 +70,17 @@ export function OpnameTab() {
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-semibold text-ink">{item.productName}</p>
                     <p className="truncate text-[12.5px] text-ink-3">
-                      {dateTime(item.createdAt)}
+                      {formatDateTimeShort(item.createdAt)}
                       {item.createdBy ? ` · ${item.createdBy}` : ''}
                     </p>
                   </div>
                   <div className="text-right">
                     <p className={cn('font-bold', delta >= 0 ? 'text-success-700' : 'text-error-600')}>
                       {delta >= 0 ? '+' : '−'}
-                      {qty(Math.abs(delta))} {item.unitName}
+                      {formatQty(Math.abs(delta))} {item.unitName}
                     </p>
                     <p className="text-[12.5px] text-ink-3">
-                      Sistem {qty(item.stockBefore)} → fisik {qty(item.stockAfter)}
+                      Sistem {formatQty(item.stockBefore)} → fisik {formatQty(item.stockAfter)}
                     </p>
                   </div>
                 </div>

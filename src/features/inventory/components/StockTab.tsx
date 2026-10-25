@@ -2,16 +2,15 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import * as inventoryApi from '@/api/inventoryApi';
-import type { StockStatus, StockSummary } from '@/types/models';
+import type { StockStatus, StockSummary } from '@/types/inventory';
+import * as inventoryApi from '@/services/inventoryApi';
+import { formatRupiah, formatQty } from '@/utils/format';
 import { Badge, EmptyState } from '@/components/ui/Display';
 import { Button } from '@/components/ui/Button';
 import { LoadingBlock } from '@/components/ui/Spinner';
-import { LayersIcon } from '@/components/icons/LineIcons';
-import { qty, rupiah } from './labels';
-import { DataTable, FilterChips, SearchBox, StatTile } from './shared';
-
-type Filter = 'ALL' | StockStatus;
+import { LayersIcon } from '@/components/ui/icons/NavIcons';
+import { DataTable, FilterChips, SearchBox, StatTile } from '@/features/inventory/components/shared';
+import type { StockFilter } from '@/features/inventory/types';
 
 const STATUS_BADGE: Record<StockStatus, { label: string; variant: 'error' | 'warning' | 'success' }> = {
   OUT: { label: 'Habis', variant: 'error' },
@@ -23,7 +22,7 @@ const STATUS_BADGE: Record<StockStatus, { label: string; variant: 'error' | 'war
 export function StockTab() {
   const [data, setData] = useState<StockSummary | null>(null);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<Filter>('ALL');
+  const [filter, setFilter] = useState<StockFilter>('ALL');
   const [query, setQuery] = useState('');
 
   const load = useCallback(async () => {
@@ -53,14 +52,14 @@ export function StockTab() {
         <StatTile label="Habis" value={String(data?.outOfStock ?? 0)} tone="error" />
         <StatTile label="Menipis" value={String(data?.lowStock ?? 0)} tone="warning" />
         <div className="col-span-3 lg:col-span-1">
-          <StatTile label="Nilai stok (harga modal)" value={rupiah(data?.totalValue ?? 0)} tone="success" />
+          <StatTile label="Nilai stok (harga modal)" value={formatRupiah(data?.totalValue ?? 0)} tone="success" />
         </div>
       </div>
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
         <div className="lg:w-80">
           <SearchBox value={query} onChange={setQuery} placeholder="Cari nama atau SKU" />
         </div>
-        <FilterChips<Filter>
+        <FilterChips<StockFilter>
           value={filter}
           onChange={setFilter}
           options={[
@@ -104,9 +103,9 @@ export function StockTab() {
                       <p className="text-[12.5px] text-ink-3">{item.sku}</p>
                     </td>
                     <td className="px-3 py-3 text-ink-2">{item.categoryName}</td>
-                    <td className="px-3 py-3 text-right text-ink-2">{item.stockValue !== null ? rupiah(item.stockValue) : '—'}</td>
+                    <td className="px-3 py-3 text-right text-ink-2">{item.stockValue !== null ? formatRupiah(item.stockValue) : '—'}</td>
                     <td className="px-3 py-3 text-right font-bold text-ink">
-                      {qty(item.stock)} <span className="font-medium text-ink-3">{item.baseUnitName}</span>
+                      {formatQty(item.stock)} <span className="font-medium text-ink-3">{item.baseUnitName}</span>
                     </td>
                     <td className="px-5 py-3">
                       <Badge variant={badge.variant}>{badge.label}</Badge>
@@ -125,12 +124,12 @@ export function StockTab() {
                     <p className="truncate font-semibold text-ink">{item.productName}</p>
                     <p className="truncate text-[12.5px] text-ink-3">
                       {item.sku} · {item.categoryName}
-                      {item.stockValue !== null ? ` · ${rupiah(item.stockValue)}` : ''}
+                      {item.stockValue !== null ? ` · ${formatRupiah(item.stockValue)}` : ''}
                     </p>
                   </div>
                   <div className="flex flex-col items-end gap-1">
                     <span className="font-bold text-ink">
-                      {qty(item.stock)} {item.baseUnitName}
+                      {formatQty(item.stock)} {item.baseUnitName}
                     </span>
                     <Badge variant={badge.variant}>{badge.label}</Badge>
                   </div>

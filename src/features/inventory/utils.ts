@@ -1,15 +1,4 @@
-import type { BadStockReason, BadStockStatus } from '@/types/models';
-
-/** Rupiah, e.g. `Rp41.000` (negative values keep their sign). */
-export const rupiah = (value: number) =>
-  `${value < 0 ? '-' : ''}Rp${Math.abs(Math.round(value)).toLocaleString('id-ID')}`;
-
-/** Number without trailing zeros, e.g. 12 or 1,5. */
-export const qty = (value: number) => Number(value).toLocaleString('id-ID', { maximumFractionDigits: 3 });
-
-/** Short Indonesian date-time, e.g. `13 Okt, 22.41`. */
-export const dateTime = (iso: string) =>
-  new Date(iso).toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+import type { BadStockReason, BadStockStatus } from '@/types/inventory';
 
 export const REASONS: { value: BadStockReason; label: string; emoji: string }[] = [
   { value: 'DAMAGED', label: 'Rusak / pecah', emoji: '💥' },
@@ -38,4 +27,12 @@ export const MOVEMENT_TYPES: Record<string, { label: string; sign: 1 | -1 }> = {
   STOCK_OPNAME: { label: 'Stok opname', sign: 1 },
   BAD_STOCK: { label: 'Bad stock', sign: -1 },
   BAD_STOCK_CANCEL: { label: 'Batal bad stock', sign: 1 },
+};
+
+export const thisMonth = () => {
+  const now = new Date();
+  return {
+    from: new Date(now.getFullYear(), now.getMonth(), 1).toISOString(),
+    to: new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString(),
+  };
 };

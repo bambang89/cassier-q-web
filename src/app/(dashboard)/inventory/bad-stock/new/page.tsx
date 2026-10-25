@@ -3,19 +3,21 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import * as inventoryApi from '@/api/inventoryApi';
-import * as productsApi from '@/api/productsApi';
-import { apiErrorMessage } from '@/api/errors';
-import type { BadStockReason, ProductUnit, StockItem } from '@/types/models';
+import type { ProductUnit } from '@/types/models';
+import type { StockItem, BadStockReason } from '@/types/inventory';
+import * as inventoryApi from '@/services/inventoryApi';
+import * as productsApi from '@/services/productsApi';
 import { Alert } from '@/lib/alert';
-import { cn } from '@/lib/cn';
-import { photoProblem, pickPhoto } from '@/lib/pickPhoto';
-import { PageBody, PageHeader } from '@/components/layout/PageHeader';
+import { apiErrorMessage } from '@/utils/apiErrors';
+import { cn } from '@/utils/cn';
+import { photoProblem, pickPhoto } from '@/utils/pickPhoto';
+import { formatRupiah, formatQty } from '@/utils/format';
+import { PageBody, PageHeader } from '@/components/common/PageHeader';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
-import { ChevronRightIcon } from '@/components/icons/LineIcons';
-import { REASONS, qty, rupiah } from '@/features/inventory/labels';
-import { SearchBox } from '@/features/inventory/shared';
+import { ChevronRightIcon } from '@/components/ui/icons/ActionIcons';
+import { REASONS } from '@/features/inventory/utils';
+import { SearchBox } from '@/features/inventory/components/shared';
 
 const label = 'mb-2 mt-6 block text-[11.5px] font-bold tracking-[0.08em] text-ink-3 first:mt-0';
 
@@ -120,7 +122,7 @@ export default function BadStockFormPage() {
               <span>
                 <span className="block font-semibold text-ink">{product.productName}</span>
                 <span className="block text-[12.5px] text-ink-3">
-                  Stok saat ini {qty(product.stock)} {product.baseUnitName}
+                  Stok saat ini {formatQty(product.stock)} {product.baseUnitName}
                 </span>
               </span>
             ) : (
@@ -157,10 +159,10 @@ export default function BadStockFormPage() {
               </div>
               {baseAmount > product.stock ? (
                 <p className="mt-1.5 text-[12.5px] text-error-600">
-                  Melebihi stok yang ada ({qty(product.stock)} {product.baseUnitName}).
+                  Melebihi stok yang ada ({formatQty(product.stock)} {product.baseUnitName}).
                 </p>
               ) : lossValue !== null ? (
-                <p className="mt-1.5 text-[12.5px] text-ink-3">Perkiraan kerugian {rupiah(lossValue)} (harga modal)</p>
+                <p className="mt-1.5 text-[12.5px] text-ink-3">Perkiraan kerugian {formatRupiah(lossValue)} (harga modal)</p>
               ) : null}
             </>
           ) : null}
@@ -230,7 +232,7 @@ export default function BadStockFormPage() {
             >
               <span className="block truncate font-semibold text-ink">{p.productName}</span>
               <span className="block text-[12.5px] text-ink-3">
-                {p.sku} · stok {qty(p.stock)} {p.baseUnitName}
+                {p.sku} · stok {formatQty(p.stock)} {p.baseUnitName}
               </span>
             </button>
           ))}

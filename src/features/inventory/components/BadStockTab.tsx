@@ -3,31 +3,25 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import * as inventoryApi from '@/api/inventoryApi';
-import { apiErrorMessage } from '@/api/errors';
-import type { BadStockItem, BadStockReport, BadStockStatus } from '@/types/models';
-import { useAppSelector } from '@/store/hooks';
-import { usePermissions } from '@/hooks/usePermissions';
-import { useMenuAccess } from '@/navigation/menu';
+import type { AlertButton } from '@/types/ui';
+import type { BadStockStatus, BadStockItem, BadStockReport } from '@/types/inventory';
+import * as inventoryApi from '@/services/inventoryApi';
 import { Alert } from '@/lib/alert';
-import type { AlertButton } from '@/lib/alert';
+import { useAppSelector } from '@/hooks/store';
+import { usePermissions } from '@/hooks/usePermissions';
+import { useMenuAccess } from '@/hooks/useMenuAccess';
+import { apiErrorMessage } from '@/utils/apiErrors';
+import { formatRupiah, formatQty } from '@/utils/format';
+import { formatDateTimeShort } from '@/utils/date';
 import { Badge, EmptyState } from '@/components/ui/Display';
 import { Button } from '@/components/ui/Button';
 import { Switch } from '@/components/ui/Field';
 import { LoadingBlock } from '@/components/ui/Spinner';
-import { AlertTriangleIcon, PlusIcon } from '@/components/icons/LineIcons';
-import { BS_STATUS, REASONS, dateTime, qty, reasonLabel, rupiah } from './labels';
-import { FilterChips, HeroCard } from './shared';
-
-type Filter = 'ALL' | BadStockStatus;
-
-const thisMonth = () => {
-  const now = new Date();
-  return {
-    from: new Date(now.getFullYear(), now.getMonth(), 1).toISOString(),
-    to: new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString(),
-  };
-};
+import { PlusIcon } from '@/components/ui/icons/ActionIcons';
+import { AlertTriangleIcon } from '@/components/ui/icons/DataIcons';
+import { BS_STATUS, REASONS, reasonLabel, thisMonth } from '@/features/inventory/utils';
+import { FilterChips, HeroCard } from '@/features/inventory/components/shared';
+import type { BadStockFilter } from '@/features/inventory/types';
 
 /** Bad stock: kerugian bulan ini, pengaturan persetujuan, dan laporan beserta tindak lanjutnya. */
 export function BadStockTab() {
@@ -36,7 +30,7 @@ export function BadStockTab() {
   const { isManager } = useMenuAccess();
   const user = useAppSelector((state) => state.auth.user);
   const isKepalaToko = !!user?.roles.some((r) => r.roleCode === 'KEPALA_TOKO');
-  const [filter, setFilter] = useState<Filter>('ALL');
+  const [filter, setFilter] = useState<BadStockFilter>('ALL');
   const [items, setItems] = useState<BadStockItem[]>([]);
   const [report, setReport] = useState<BadStockReport | null>(null);
   const [requireApproval, setRequireApproval] = useState(true);
@@ -103,7 +97,7 @@ export function BadStockTab() {
   const openActions = (item: BadStockItem) => {
     const buttons = actionsFor(item);
     if (buttons.length === 0) return;
-    Alert.alert(item.productName, `${qty(item.quantity)} ${item.unitName} · ${reasonLabel(item.reason)}`, [
+    Alert.alert(item.productName, `${formatQty(item.quantity)} ${item.unitName} · ${reasonLabel(item.reason)}`, [
       { text: 'Tutup', style: 'cancel' },
       ...buttons,
     ]);
@@ -115,10 +109,10 @@ export function BadStockTab() {
   return (
     <div className="space-y-3">
       <div className="grid gap-3 lg:grid-cols-[1fr_1fr]">
-        <HeroCard title="KERUGIAN BAD STOCK BULAN INI" value={rupiah(report?.totalValue ?? 0)}>
+        <HeroCard title="KERUGIAN BAD STOCK BULAN INI" value={formatRupiah(report?.totalValue ?? 0)}>
           <p className="text-[12.5px] text-white/70">
             {report?.records ?? 0} laporan
-            {report?.byReason.length ? ` · terbanyak: ${reasonLabel(report.byReason[0].reason)} (${rupiah(report.byReason[0].value)})` : ''}
+            {report?.byReason.length ? ` · terbanyak: ${reasonLabel(report.byReason[0].reason)} (${formatRupiah(report.byReason[0].value)})` : ''}
           </p>
           {report?.pending ? <p className="mt-1 text-[12.5px] font-semibold text-warning-200">{report.pending} laporan menunggu persetujuan</p> : null}
         </HeroCard>
@@ -142,7 +136,7 @@ export function BadStockTab() {
         </div>
       </div>
 
-      <FilterChips<Filter>
+      <FilterChips<BadStockFilter>
         value={filter}
         onChange={setFilter}
         options={[
@@ -186,15 +180,15 @@ export function BadStockTab() {
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-semibold text-ink">{item.productName}</p>
                     <p className="truncate text-[12.5px] text-ink-2">
-                      {qty(item.quantity)} {item.unitName} · {reasonLabel(item.reason)}
-                      {item.costValue !== null ? ` · ${rupiah(item.costValue)}` : ''}
+                      {formatQty(item.quantity)} {item.unitName} · {reasonLabel(item.reason)}
+                      {item.costValue !== null ? ` · ${formatRupiah(item.costValue)}` : ''}
                     </p>
                   </div>
                   <Badge variant={status.tone}>{status.label}</Badge>
                 </div>
                 {item.notes ? <p className="line-clamp-2 text-[12.5px] text-ink-3 italic">“{item.notes}”</p> : null}
                 <p className="text-[12px] text-ink-3">
-                  Dicatat {item.reportedBy ?? '-'} · {dateTime(item.createdAt)}
+                  Dicatat {item.reportedBy ?? '-'} · {formatDateTimeShort(item.createdAt)}
                   {item.supplierName ? ` · ke ${item.supplierName}` : ''}
                   {hasActions ? <span className="ml-1 font-semibold text-primary-600">· Tindak lanjuti →</span> : null}
                 </p>
